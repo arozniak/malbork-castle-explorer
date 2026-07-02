@@ -247,10 +247,15 @@ Please review the layout and identify why the intro paragraph is being repositio
 
 ```text
 okay, try to implement this
-```
 
 ## 2026-07-02 - Push project to GitHub request
 
 ```text
 I created a remote repository in github for this project (SSH: git@github.com:arozniak/malbork-castle-explorer.git). Can you help me to push all the work on this project into git?
+```
+
+## 2026-07-02 - Add local run instructions to README
+
+```text
+add those instructions to the README.md file
 ```

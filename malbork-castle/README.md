@@ -4,6 +4,24 @@
 
 This template demonstrates how to use the [ArcGIS Maps SDK for JavaScript](https://developers.arcgis.com/javascript/latest/) in a Vite React 19 TSX application.
 
+## Run locally
+
+From the project root, install dependencies and start the Vite development server:
+
+```bash
+npm install
+npm run dev
+```
+
+Vite will print a local URL, typically `http://localhost:5173`, which you can open in your browser.
+
+For a production build and local preview:
+
+```bash
+npm run build
+npm run preview
+```
+
 ## Get started
 
 To quickly scaffold a new application using this template, run the following command in your terminal:
