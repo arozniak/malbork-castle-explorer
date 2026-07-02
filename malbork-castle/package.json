@@ -1,0 +1,26 @@
+{
+  "name": "js-maps-sdk-react-template",
+  "description": "ArcGIS Maps SDK for JavaScript Vite React TSX template",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@arcgis/core": "^5.1.0",
+    "@arcgis/map-components": "^5.1.0",
+    "@esri/calcite-components": "^5.1.1",
+    "react": "^19.2.7",
+    "react-dom": "^19.2.7"
+  },
+  "devDependencies": {
+    "@types/node": "~24.10.1",
+    "@types/react": "19.2.14",
+    "@types/react-dom": "19.2.3",
+    "@vitejs/plugin-react": "~6.0.2",
+    "typescript": "~6.0.2",
+    "vite": "^8.0.16"
+  }
+}
