@@ -254,5 +254,3 @@ okay, try to implement this
 ```text
 I created a remote repository in github for this project (SSH: git@github.com:arozniak/malbork-castle-explorer.git). Can you help me to push all the work on this project into git?
 ```
-
-```
