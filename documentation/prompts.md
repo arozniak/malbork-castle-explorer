@@ -308,3 +308,9 @@ The subtle scene darkening looks much better. Now increase the font size of the 
 ```text
 the UI buttons from the map should not be affected by the darkening of the screen. can you put them in front of the darkening area? 
 ```
+
+## 2026-07-03 - Build redirection explanation request
+
+```text
+You were mentioning the error or issue related to the build "The build output was redirected again, so I’m checking the saved log tail for the completion marker before I wrap up.". Can you explain me what is this about? Can you fix that? 
+```
