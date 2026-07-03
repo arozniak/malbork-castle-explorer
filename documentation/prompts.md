@@ -247,6 +247,7 @@ Please review the layout and identify why the intro paragraph is being repositio
 
 ```text
 okay, try to implement this
+```
 
 ## 2026-07-02 - Push project to GitHub request
 
@@ -254,8 +255,50 @@ okay, try to implement this
 I created a remote repository in github for this project (SSH: git@github.com:arozniak/malbork-castle-explorer.git). Can you help me to push all the work on this project into git?
 ```
 
-## 2026-07-02 - Add local run instructions to README
+## 2026-07-03 - Intro text shadow refinement request
 
 ```text
-add those instructions to the README.md file
+The layout and behavior are now working correctly. I only want to improve the readability of the introductory text (before the user clicks "Read more"). The expanded text behavior is already perfect and should not be changed. Please only add a very subtle text shadow to the introductory text.
+```
+
+## 2026-07-03 - Scene-level upper darkening request
+
+```text
+I would like to add a subtle scene-level darkening effect to the upper portion of the viewport.
+
+This effect should:
+- be independent of the text content, selected tab, and visible scene elements
+- always be present regardless of which slide is active
+- span the full width of the viewport
+- start at the top edge of the screen
+- remain strongest near the top
+- gradually fade to transparent by approximately one third of the viewport height
+- have no visible edges, boundaries, or transition lines
+- feel like atmospheric scene shading rather than a UI element
+
+The goal is to slightly reduce brightness and visual noise in the upper part of the scene so the navigation and introductory text remain readable across all slides. Do not add a panel, card, box, rectangle, blur region, or localized background behind the text. Do not modify the navigation, text layout, positioning, spacing, typography, or expansion behavior.
+```
+
+## 2026-07-03 - Stronger upper darkening follow-up
+
+```text
+the darkening needs to go much lower, to 1/3 of the screen. it's too little and too weak
+```
+
+## 2026-07-03 - Upper shading visibility feedback
+
+```text
+I sitll don't see it at all. are you doing anything? also look at the UX designs, it was there as an example.
+```
+
+## 2026-07-03 - Extend upper shading farther
+
+```text
+I think now the strength is better, but I would like it to extend twice as far as it does now
+```
+
+## 2026-07-03 - Intro font size increase request
+
+```text
+The subtle scene darkening looks much better. Now increase the font size of the introductory text to improve readability. 
 ```

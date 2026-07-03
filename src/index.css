@@ -18,9 +18,30 @@ arcgis-scene {
 
 .scene-overlay {
   inset: 0;
+  isolation: isolate;
   pointer-events: none;
   position: absolute;
   z-index: 2;
+}
+
+.scene-overlay::before {
+  background: linear-gradient(
+    180deg,
+    rgb(17 13 10 / 58%) 0%,
+    rgb(17 13 10 / 46%) 9%,
+    rgb(17 13 10 / 32%) 18%,
+    rgb(17 13 10 / 20%) 26%,
+    rgb(17 13 10 / 10%) 33%,
+    rgb(17 13 10 / 4%) 38%,
+    transparent 46%
+  );
+  content: "";
+  inset: 0 0 auto;
+  height: 92vh;
+  mix-blend-mode: multiply;
+  pointer-events: none;
+  position: absolute;
+  z-index: 0;
 }
 
 .scene-text-veil {
@@ -30,6 +51,7 @@ arcgis-scene {
     linear-gradient(180deg, rgb(16 12 10 / 28%) 0%, rgb(16 12 10 / 48%) 100%);
   inset: 0;
   position: absolute;
+  z-index: 1;
 }
 
 .slide-ui-stack {
@@ -44,6 +66,7 @@ arcgis-scene {
   top: 1.2rem;
   transform: translateX(-50%);
   width: min(92vw, 72rem);
+  z-index: 2;
 }
 
 .slide-tab-rail {
@@ -117,7 +140,6 @@ arcgis-scene {
   margin: 0;
   max-width: 100%;
   padding-right: 0;
-  text-shadow: 0 4px 18px rgb(0 0 0 / 32%);
   font-size: clamp(1rem, 0.94rem + 0.22vw, 1.12rem);
   line-height: 1.65;
 }
@@ -129,6 +151,10 @@ arcgis-scene {
   overflow-y: auto;
   padding: 0 0.35rem 0.5rem;
   scrollbar-gutter: stable;
+}
+
+.slide-text-intro {
+  font-size: clamp(1.08rem, 1rem + 0.28vw, 1.2rem);
 }
 
 .slide-text-intro {
