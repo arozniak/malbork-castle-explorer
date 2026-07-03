@@ -314,3 +314,76 @@ the UI buttons from the map should not be affected by the darkening of the scree
 ```text
 You were mentioning the error or issue related to the build "The build output was redirected again, so I’m checking the saved log tail for the completion marker before I wrap up.". Can you explain me what is this about? Can you fix that? 
 ```
+
+## 2026-07-03 - Phase 3 planning request
+
+```text
+let's start with the phase 3! please first explain me what is the plan for the phase 3. is it still actual considering the current state of the app? is anything uncertain or unclear? 
+```
+
+## 2026-07-03 - Phase 3 clarification answers
+
+```text
+Given the uncertainties: I am not sure about the exact camera motion, we need to experiment. Per stop duration should be around 7s. Any click including UI controls pauses the tour, correct. If text is expanded, play immediately pauses. 
+```
+
+## 2026-07-03 - Phase 3 orbit center clarification
+
+```text
+Let me clarify phase 3 even further:
+
+- The user can start a guided tour from the currently active slide.
+- The camera should move around the location or object that is the focus of the slide.
+- The focused location should remain the center of attention during the motion.
+- The user can pause and resume at any moment.
+- Pause should preserve the exact state of the tour.
+- Resume should continue from that state.
+- The tour should advance through slides automatically.
+- User interaction should interrupt or pause the tour.
+- Navigation tabs should remain functional.
+- The final slide should stop automatically.
+
+Before proposing any code changes, please answer: How should the orbit center for each slide be determined?
+```
+
+## 2026-07-03 - Implement phase 3 first pass
+
+```text
+okay, try to implement this and let's see how it looks like.
+```
+
+## 2026-07-03 - Tour jumps to wrong place feedback
+
+```text
+this is wrong. when pressing play, the camera goes to completely different location on the globe. please look through samples and showcases to see if there are anything that can help you to do this correctly
+```
+
+## 2026-07-03 - Slow full rotations and live progress feedback
+
+```text
+Okay, that's a really good starting point! The rotation now happens correctly: the camera rotates around the focus area/point of interest. Let's correct a few further things. First, remove all the captions from below the play/pause button. Then, for the first two initial stops: Overview and HighCastle, try to implement a full rotation (360 degrees). It's okay that it will last longer. Then, the timer measuring the lasting of the animation is working only sometimes. Please examine that.
+```
+
+## 2026-07-03 - Slow full rotations and live progress feedback
+
+```text
+Okay, I can see the 360 rotation for overview and high castle which is great. However, can you slow them off, let's say make it twice as slow? Also in the case of high castle, zoom out slightly first. The progress bar doesn't load when the movie is being played, but updates only when pressing pause again. The progress bar should work live when the rotations are happening.
+```
+
+## 2026-07-03 - Remove High Castle zoom out
+
+```text
+That is getting much better. I have adjusted the slides a bit so you can remove the zoom out of the scene in the high castle.
+```
+
+## 2026-07-03 - Extend stop rotations and align initial view
+
+```text
+okay, could we try to extend the rotations around the other 4 locations from 7 to 10s? Also, I noticed that when I open the scene, the map flies from somewhere to the initial overview scene. I would like the scene to be initiated already on the overview scene. Finally, can you please increase the spacing between the bottom of the screen and the play/pause button? Make it the same as the distance between the top of the screen and the location tabs
+```
+
+## 2026-07-03 - Double play button bottom offset
+
+```text
+can you  double the offset between the play/pause button and the bottom of the screen?
+```

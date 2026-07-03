@@ -23,10 +23,11 @@ Implement the app around the provided public Web Scene as source of truth, drivi
 15. Keep the expanded text area height capped so the future play button remains clear below it. Only show a scrollbar when the text actually exceeds that height.
 16. While expanded text is open, stop camera motion, disable auto-tour transitions, and preserve the clean centered composition from the reference images.
 11. Phase 3 - Auto-tour behavior.
-12. Add a bottom-center play and pause control with a circular progress arc and per-stop timer.
-13. Auto-tour loop semantics: start from the current active slide, run a guided reveal animation for the current stop, then advance to the next slide after timer completion, and stop automatically at the final slide.
-14. Use a hybrid camera strategy: default to a short orbit around the focal structure first, and only replace that motion with custom per-slide keyframes when the orbit looks awkward, hides important geometry, or does not frame the story well.
-14. Interaction override rules: any scene click or pointer interaction pauses the tour; clicking play toggles pause and resume; clicking tabs during the tour immediately stops the tour and switches context.
+12. Add a bottom-center play and pause control with a circular progress arc and a per-stop timer.
+13. Auto-tour loop semantics: start from the current active slide, run a guided reveal animation for about 7 seconds for the current stop, then advance to the next slide after timer completion, and stop automatically at the final slide.
+14. Camera motion remains exploratory for the first implementation. Start with one calm generic reveal motion that can be tested across all stops, then refine or replace weak stops with custom per-slide motion only after visual review.
+15. Interaction override rules: any click, including scene clicks and UI control clicks, pauses the tour. Clicking play toggles pause and resume. Clicking tabs during the tour immediately stops the tour and switches context.
+16. If text is expanded, the tour pauses immediately and play remains blocked until the text is collapsed again.
 15. Phase 4 - Layer switch thumbnail.
 16. Detect target layers from operational layers by title and layer type: `Malbork_GUGiK_GaussianSplat` as `GaussianSplatLayer` and `Malbork_GUGiK_3Dmesh` as the mesh or integrated mesh scene layer.
 17. Add a bottom-right thumbnail toggle with label; clicking swaps visibility between those two layers and updates the active indicator.
@@ -52,7 +53,7 @@ Implement the app around the provided public Web Scene as source of truth, drivi
 5. Tabs appear as one continuous single-row segmented control on desktop rather than wrapped standalone pills.
 6. The text block is centered below the tabs, uses no hard-edged panel, and keeps the scene visible behind a soft readability veil.
 7. Read more expands full text, remains scrollable only when needed, does not cover the play button area, and suspends auto-tour and camera motion.
-8. Play starts calm drift plus progress arc, advances slide by slide, pauses on scene click, and stops at the final slide.
+8. Play starts the reveal motion plus progress arc, advances slide by slide every roughly 7 seconds, pauses on any click, and stops at the final slide.
 9. Layer thumbnail toggles Gaussian splat versus mesh visibility correctly.
 
 ## Decisions
@@ -69,4 +70,4 @@ Implement the app around the provided public Web Scene as source of truth, drivi
 1. If intro truncation feels too verbose or too short in testing, switch to a strict character clamp such as 200 to 240 characters while keeping sentence-boundary fallback.
 2. Drift implementation can start as lightweight periodic `goTo` movement around the current viewpoint and only move to authored per-slide drift offsets if the motion quality is not good enough.
 3. Layer-toggle thumbnail artwork can start as a simple static preview and be upgraded later once core behavior is stable.
-4. Camera motion strategy: start with a short orbit around each focal structure, then promote only the weak stops to custom per-slide keyframes after visual review.
+4. Camera motion strategy: treat the first motion pass as experimental, validate one calm generic reveal against all stops, then promote only the weak stops to custom per-slide keyframes after visual review.

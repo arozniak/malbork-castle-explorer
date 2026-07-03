@@ -170,9 +170,6 @@ arcgis-scene {
 
 .slide-text-intro {
   font-size: clamp(1.08rem, 1rem + 0.28vw, 1.2rem);
-}
-
-.slide-text-intro {
   overflow: visible;
 }
 
@@ -200,6 +197,117 @@ arcgis-scene {
 .slide-text-toggle:focus-visible {
   color: #fff1de;
   outline: none;
+}
+
+.tour-control {
+  align-items: center;
+  bottom: 2.4rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+  left: 50%;
+  pointer-events: none;
+  position: absolute;
+  transform: translateX(-50%);
+  z-index: 2;
+}
+
+.tour-toggle {
+  align-items: center;
+  backdrop-filter: blur(14px);
+  background: linear-gradient(180deg, rgb(252 240 224 / 94%), rgb(233 205 170 / 92%));
+  border: 1px solid rgb(255 248 239 / 58%);
+  border-radius: 999px;
+  box-shadow: 0 22px 45px rgb(12 7 3 / 22%);
+  color: #362114;
+  cursor: pointer;
+  display: inline-flex;
+  height: 4.75rem;
+  justify-content: center;
+  pointer-events: auto;
+  position: relative;
+  transition:
+    transform 180ms ease,
+    box-shadow 180ms ease,
+    opacity 180ms ease;
+  width: 4.75rem;
+}
+
+.tour-toggle:hover,
+.tour-toggle:focus-visible {
+  box-shadow: 0 26px 55px rgb(12 7 3 / 28%);
+  outline: none;
+  transform: translateY(-1px);
+}
+
+.tour-toggle:disabled {
+  cursor: default;
+  opacity: 0.68;
+  transform: none;
+}
+
+.tour-progress {
+  height: 100%;
+  inset: 0;
+  position: absolute;
+  transform: rotate(-90deg);
+  width: 100%;
+}
+
+.tour-progress-track,
+.tour-progress-value {
+  fill: none;
+  stroke-width: 2.2;
+}
+
+.tour-progress-track {
+  stroke: rgb(70 44 24 / 16%);
+}
+
+.tour-progress-value {
+  stroke: #6e4726;
+  stroke-linecap: round;
+  transition: stroke-dashoffset 120ms linear;
+}
+
+.tour-toggle-icon {
+  color: currentColor;
+  display: block;
+  height: 1.08rem;
+  position: relative;
+  width: 1rem;
+}
+
+.tour-toggle-icon::before,
+.tour-toggle-icon::after {
+  content: "";
+  position: absolute;
+}
+
+.tour-toggle-icon::before {
+  background: currentColor;
+  clip-path: polygon(0 0, 100% 50%, 0 100%);
+  inset: 0;
+  transform: translateX(0.08rem);
+}
+
+.tour-toggle.is-playing .tour-toggle-icon::before,
+.tour-toggle.is-playing .tour-toggle-icon::after {
+  background: currentColor;
+  border-radius: 999px;
+  bottom: 0;
+  clip-path: none;
+  top: 0;
+  width: 0.24rem;
+}
+
+.tour-toggle.is-playing .tour-toggle-icon::before {
+  inset: 0 auto 0 0.14rem;
+  transform: none;
+}
+
+.tour-toggle.is-playing .tour-toggle-icon::after {
+  right: 0.14rem;
 }
 
 .scene-status {
@@ -247,5 +355,14 @@ arcgis-scene {
   .slide-text-expanded {
     max-height: calc(100vh - 12rem);
     padding-inline: 0.25rem;
+  }
+
+  .tour-control {
+    bottom: 1.6rem;
+  }
+
+  .tour-toggle {
+    height: 4.3rem;
+    width: 4.3rem;
   }
 }
