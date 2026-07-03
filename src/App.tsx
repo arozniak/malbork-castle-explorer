@@ -7,6 +7,7 @@ import "@arcgis/map-components/components/arcgis-zoom";
 import "@esri/calcite-components/components/calcite-shell";
 
 const MALBORK_WEB_SCENE_ID = "a032056172494a81a2105ef9232ea9a9";
+const SCENE_ELEMENT_ID = "malbork-scene";
 const LONG_DESCRIPTION_THRESHOLD = 220;
 const LONG_DESCRIPTION_SENTENCE_COUNT = 2;
 const SHORT_DESCRIPTION_SENTENCE_COUNT = 1;
@@ -300,14 +301,16 @@ export function App(): JSX.Element {
     <calcite-shell content-behind>
       <arcgis-scene
         aria-label={sceneLabel}
+        id={SCENE_ELEMENT_ID}
         itemId={MALBORK_WEB_SCENE_ID}
         popupDisabled
         ref={sceneRef}
-      >
-        <arcgis-home slot="top-left" />
-        <arcgis-zoom slot="top-left" />
-        <arcgis-compass slot="top-left" />
-      </arcgis-scene>
+      />
+      <div aria-label="Map controls" className="scene-controls">
+        <arcgis-home referenceElement={SCENE_ELEMENT_ID} />
+        <arcgis-zoom referenceElement={SCENE_ELEMENT_ID} />
+        <arcgis-compass referenceElement={SCENE_ELEMENT_ID} />
+      </div>
       {sceneReady && slides.length > 0 ? (
         <div className={`scene-overlay${isTextExpanded ? " is-text-expanded" : ""}`}>
           {isTextExpanded ? <div aria-hidden="true" className="scene-text-veil" /> : null}

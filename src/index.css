@@ -16,6 +16,21 @@ arcgis-scene {
   height: 100%;
 }
 
+.scene-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  left: 1rem;
+  pointer-events: none;
+  position: absolute;
+  top: 1rem;
+  z-index: 3;
+}
+
+.scene-controls > * {
+  pointer-events: auto;
+}
+
 .scene-overlay {
   inset: 0;
   isolation: isolate;
@@ -200,6 +215,11 @@ arcgis-scene {
 }
 
 @media (max-width: 720px) {
+  .scene-controls {
+    left: 0.75rem;
+    top: 0.75rem;
+  }
+
   .slide-ui-stack {
     top: 0.8rem;
     width: calc(100vw - 1.25rem);

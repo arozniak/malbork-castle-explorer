@@ -302,3 +302,9 @@ I think now the strength is better, but I would like it to extend twice as far a
 ```text
 The subtle scene darkening looks much better. Now increase the font size of the introductory text to improve readability. 
 ```
+
+## 2026-07-03 - Map controls above darkening request
+
+```text
+the UI buttons from the map should not be affected by the darkening of the screen. can you put them in front of the darkening area? 
+```
