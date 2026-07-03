@@ -52,7 +52,7 @@ arcgis-scene {
   );
   content: "";
   inset: 0 0 auto;
-  height: 92vh;
+  height: 130vh;
   mix-blend-mode: multiply;
   pointer-events: none;
   position: absolute;
