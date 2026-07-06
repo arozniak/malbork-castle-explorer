@@ -488,3 +488,9 @@ It's not a bad version. However, I don't like the icon, can you remove it? Also,
 ```text
 okay, actually bring back the icon, now the button is too plain. do you have any further improvement ideas for the button?
 ```
+
+## 2026-07-06 - Dark translucent chip redesign request
+
+```text
+I changed my mind again, looking at the buttons. Redesign the layer switch chip using a dark translucent glass style. Keep the bottom-right placement and current functionality. Reduce the chip height by about 15–20%, reduce horizontal padding, use white text, a subtle light border, and a slightly transparent dark background. Keep the Play button unchanged. The layer switch should look like a secondary utility control, while the Play button remains the primary visual focus.
+```
