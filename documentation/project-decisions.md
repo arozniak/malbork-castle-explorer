@@ -17,3 +17,25 @@
 - Phase 4 layer selection persists until the user changes it and is reapplied after slide state restores so focus areas still work in both mesh and Gaussian splat modes.
 - No authentication flow is included.
 - Phase 1 stores a normalized in-app slide model from the loaded scene so later UI work can use consistent slide data.
+
+## Documented `@arcgis/core` Usage
+
+- Current direct `@arcgis/core` usage is limited to `Point`, `geodesicUtils`, and `webMercatorUtils` in [src/App.tsx](src/App.tsx).
+- This usage exists only for custom guided-tour orbit math and point normalization: building point instances from runtime geometry, converting between geographic and Web Mercator coordinates, measuring geodesic distance and azimuth from orbit center to camera, and calculating destination points for orbit frames.
+- Official ArcGIS Map Components documentation describes components as reusable UI/component surfaces with functionality equivalent to widgets. In that component surface, no geometry-construction API, geodesic helper API, or spatial-reference conversion helper API was identified that could replace these tour-math operations.
+- Based on the current codebase and the official Map Components surface reviewed, there is no component-only path for the orbit calculations now implemented in [src/App.tsx](src/App.tsx). The direct `@arcgis/core` imports are therefore documented as a necessary exception to the Map Components-first rule.
+
+## Implementation References Used
+
+- Guided tour motion and camera/orbit approach: official ArcGIS Maps SDK for JavaScript components overview and scene guidance.
+	https://developers.arcgis.com/javascript/latest/components/
+	https://developers.arcgis.com/javascript/latest/scenes-3d/
+- Slide-driven scene state restoration and Web Scene driven navigation: official ArcGIS Maps SDK for JavaScript product documentation and Web Scene based scene workflows.
+	https://developers.arcgis.com/javascript/latest/
+	https://developers.arcgis.com/javascript/latest/get-started/
+- Layer switching context, including Gaussian Splat support and 3D scene capabilities: official ArcGIS Maps SDK for JavaScript sample/reference surface.
+	https://developers.arcgis.com/javascript/latest/sample-code/layers-gaussiansplatlayer/
+	https://developers.arcgis.com/javascript/latest/layers/
+- Map Components-first integration surface used by the app shell and scene controls.
+	https://developers.arcgis.com/javascript/latest/components/
+	https://developers.arcgis.com/javascript/latest/references/map-components/

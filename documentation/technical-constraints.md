@@ -1,8 +1,15 @@
 # Technical Constraints
 
+## Historical Bootstrap Constraints
+
 - Initialize the project with the official `npx @arcgis/create` CLI.
 - Use the latest stable ArcGIS Maps SDK for JavaScript available from the official CLI template.
 - Keep the generated source code unchanged for this step.
+
+These bootstrap-only constraints applied to the initial scaffold/setup step and are retained here as project history. They should not be used to classify later implementation work as non-compliant once the project moved beyond the scaffold phase.
+
+## Active Implementation Constraints
+
 - Target a 3D scene-based application that will use 3D data in later steps.
 - Prefer ArcGIS Map Components first.
 - Use `@arcgis/core` only when Map Components are not sufficient, and document the reason when that happens.

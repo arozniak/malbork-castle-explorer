@@ -500,3 +500,27 @@ I changed my mind again, looking at the buttons. Redesign the layer switch chip 
 ```text
 I tested the app a bit and found a bug with the play/tour mode. Before starting the tour rotation, reset the camera to the selected location's initial viewpoint. Only after the camera reaches that viewpoint should the rotation animation begin. This should happen every time Play is pressed, even if the user has manually moved the camera beforehand.
 ```
+
+## 2026-07-06 - Technical constraints compliance review request
+
+```text
+Let's move on to testing. Phase 1 would be technical constrainst compliance. Do not modify any code in this stage. Find the document that defines the project's technical constraints.
+
+Review the entire codebase against those requirements and identify any places where the implementation differs from the documented approach. 
+
+Create a markdown report in the documentation folder that includes:
+- compliant items
+- partially compliant items
+- non-compliant items
+- recommended actions
+```
+
+## 2026-07-06 - Technical constraints follow-up documentation tasks
+
+```text
+I reviewed the document. Follow up with these tasks next: 
+
+- Add a short documentation note explaining the `@arcgis/core` usage. The minimal acceptable note is that Map Components do not expose the geometry helpers needed for the custom orbit/tour camera math, so `Point`, geodesic calculations, and Web Mercator conversion helpers were pulled from `@arcgis/core`. For all usage of core components make sure that there is indeed no way to achieve this with the map components. 
+- Mark bootstrap-only constraints more explicitly as historical in [documentation/technical-constraints.md](documentation/technical-constraints.md), especially the "generated source code unchanged for this step" rule, so future compliance reviews do not treat normal implementation work as a failure.
+- Add a brief "implementation references used" section to documentation for higher-risk features such as guided tour motion, slide application, and layer switching. That would make the "prefer official ArcGIS references" constraint auditable instead of inferred.
+```
