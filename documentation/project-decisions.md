@@ -14,5 +14,6 @@
 - Intro text is derived from slide descriptions using a sentence-aware rule: first 2 sentences for descriptions at least 220 characters long, otherwise first 1 sentence.
 - Phase 2 renders custom pill tabs from the normalized slide model and drives camera navigation from the selected slide viewpoint.
 - Phase 2 uses a soft in-scene readability overlay instead of a separate side panel for descriptive text.
+- Phase 4 layer selection persists until the user changes it and is reapplied after slide state restores so focus areas still work in both mesh and Gaussian splat modes.
 - No authentication flow is included.
 - Phase 1 stores a normalized in-app slide model from the loaded scene so later UI work can use consistent slide data.

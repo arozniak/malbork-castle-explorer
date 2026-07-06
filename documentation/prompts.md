@@ -387,3 +387,104 @@ okay, could we try to extend the rotations around the other 4 locations from 7 t
 ```text
 can you  double the offset between the play/pause button and the bottom of the screen?
 ```
+
+## 2026-07-03 - Robust persistent layer switching system
+
+```text
+Implement a robust layer-switching system for the 3D Mesh and Gaussian Splat representations of each location.
+
+Layer Behavior
+
+- The default layer is the 3D Mesh.
+- Users can manually switch between Mesh and Gaussian Splat at any time.
+- Once a user manually selects a layer, that choice must persist across:
+  - location changes
+  - slides
+  - focus areas
+  - auto-tour steps
+  - navigation within the application
+
+Do not automatically switch the user back to another layer when navigating.
+
+Performance
+
+- If Gaussian Splat mode is active and the user moves between locations, do not destroy and recreate the splat layer.
+- Reuse the existing Gaussian Splat layer whenever possible and simply update it to display the new location.
+- Avoid unnecessary layer reloads, flickering, or visible loading delays during navigation.
+
+Focus Areas
+
+- Focus areas must work identically in both Mesh and Gaussian Splat modes.
+- When changing locations, slides, or focus areas, the correct focus area should remain active and correctly positioned regardless of the currently selected layer.
+- Switching layers must not break focus area functionality.
+
+Layer Switcher UI
+
+Create a compact layer switcher in the bottom-right corner of the viewer.
+
+- Align the layer switcher with the Play Tour button so both controls feel like part of the same control group.
+- The layer switcher should always display the alternative layer that will be activated when clicked.
+  - If Mesh is currently active, show a Gaussian Splat preview.
+  - If Gaussian Splat is currently active, show a Mesh preview.
+
+Thumbnail Requirements
+
+- The thumbnail must use a real screenshot of the scene and not a placeholder image, icon, solid color, gradient, or random asset.
+- Generate the thumbnail from the actual representation being shown in the preview.
+- The screenshot should be a zoomed-in view of a representative area of the scene so that the visual differences between Mesh and Gaussian Splat are immediately recognizable.
+- Use the same camera viewpoint for both layer thumbnails whenever possible to make comparison easier.
+- Update the thumbnail when the active location changes so it always represents the current location.
+
+Thumbnail Label
+
+- Show a small overlay label directly on top of the thumbnail image.
+- Display either:
+  - "Mesh"
+  - "Gaussian Splat"
+- Do not use text such as:
+  - "Switch to Mesh"
+  - "Switch to Gaussian Splat"
+  - "Scene Layer"
+- The label should be subtle but always readable on top of the image.
+
+Visual Design
+
+- Keep the control compact and modern.
+- The thumbnail image should be the primary visual element.
+- Ensure the label remains readable regardless of the underlying image.
+- The control should feel integrated with the existing Play Tour controls and not appear as a separate floating widget.
+
+Important
+
+Keep the current tour system, slide navigation, text panels, read-more behavior, focus area interactions, and other existing functionality unchanged unless modifications are strictly necessary to implement the requirements above.
+```
+
+## 2026-07-03 - Static overview thumbnail and stricter no-reload behavior
+
+```text
+It is not fully correct, but not a bad start. First, if I switch the layers not in order, they sometimes still reload. Also, I would like the same statis thumbnail for all the locations, it should not change together with the locations. Choose the one currently present in the overview but zoom more than at the moment.
+```
+
+## 2026-07-06 - Alternatives to thumbnail layer switch request
+
+```text
+Okay, I am no longer convinced with the thumbnail idea. What are the alternative solutions to show the other layer that the user can switch to? Don't code anything yet, I just want to discuss ideas.
+```
+
+## 2026-07-06 - Replace thumbnail switcher with chip
+
+```text
+Replace the thumbnail-based representation switcher with a small chip in the bottom-right corner of the viewer. The chip should include a subtle icon and display the representation available to switch to. For example, when Mesh is active, show **Gaussian Splat** in the chip; when Gaussian Splat is active, show **Mesh**. Clicking the chip switches representations and updates the label. Keep the design minimal, badge-like, and unobtrusive. Do not use a thumbnail preview.
+```
+
+## 2026-07-06 - Remove chip icon and increase visibility
+
+```text
+It's not a bad version. However, I don't like the icon, can you remove it? Also, adjust the colors, I think at the moment the button is not visibile enough.
+```
+
+## 2026-07-06 - Restore chip icon and discuss improvements
+
+```text
+okay, actually bring back the icon, now the button is too plain. do you have any further improvement ideas for the button?
+```

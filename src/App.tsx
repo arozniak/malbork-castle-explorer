@@ -11,6 +11,8 @@ import "@esri/calcite-components/components/calcite-shell";
 
 const MALBORK_WEB_SCENE_ID = "a032056172494a81a2105ef9232ea9a9";
 const SCENE_ELEMENT_ID = "malbork-scene";
+const GAUSSIAN_SPLAT_LAYER_TITLE = "Malbork_GUGiK_GaussianSplat";
+const INTEGRATED_MESH_LAYER_TITLE = "Malbork_GUGiK_3Dmesh";
 const LONG_DESCRIPTION_THRESHOLD = 220;
 const LONG_DESCRIPTION_SENTENCE_COUNT = 2;
 const SHORT_DESCRIPTION_SENTENCE_COUNT = 1;
@@ -22,6 +24,7 @@ const MIN_ORBIT_RADIUS = 25;
 const TOUR_PROGRESS_CIRCUMFERENCE = 113.1;
 
 type SceneElement = HTMLElementTagNameMap["arcgis-scene"];
+type LayerMode = "mesh" | "splat";
 
 interface SlidesCollectionLike<T> {
   toArray?: () => T[];
@@ -113,7 +116,21 @@ interface SlideModel {
   viewpoint: unknown;
 }
 
+interface LayerLike {
+  declaredClass?: string;
+  id?: string;
+  title?: string;
+  type?: string;
+  visible?: boolean;
+}
+
+interface LayerTargets {
+  mesh: LayerLike;
+  splat: LayerLike;
+}
+
 interface WebSceneLike {
+  allLayers?: SlidesCollectionLike<LayerLike> | null;
   focusAreas?: FocusAreasLike | null;
   load?: () => Promise<unknown>;
   presentation?: {
@@ -330,6 +347,45 @@ function getTourMotionConfig(slide: SlideModel): TourMotionConfig {
     radiusMultiplier: 1,
     sweepDegrees: ORBIT_SWEEP_DEGREES,
   };
+}
+
+function normalizeLayerIdentity(value: string | undefined | null): string {
+  return (value ?? "").trim().toLowerCase();
+}
+
+function layerMatches(layer: LayerLike, title: string, allowedTypes: string[]): boolean {
+  const normalizedTitle = normalizeLayerIdentity(layer.title);
+  const normalizedType = normalizeLayerIdentity(layer.type || layer.declaredClass);
+
+  return normalizedTitle === normalizeLayerIdentity(title) && allowedTypes.some((type) => normalizedType.includes(type));
+}
+
+function resolveLayerTargets(map: WebSceneLike | null | undefined): LayerTargets | null {
+  const allLayers = toArray(map?.allLayers);
+  const splatLayer = allLayers.find((layer) => layerMatches(layer, GAUSSIAN_SPLAT_LAYER_TITLE, ["gaussian-splat", "gaussiansplat"]));
+  const meshLayer = allLayers.find((layer) =>
+    layerMatches(layer, INTEGRATED_MESH_LAYER_TITLE, ["integrated-mesh", "integratedmesh", "mesh"]),
+  );
+
+  if (!splatLayer || !meshLayer) {
+    return null;
+  }
+
+  return {
+    mesh: meshLayer,
+    splat: splatLayer,
+  };
+}
+
+function applyLayerModeToTargets(targets: LayerTargets, layerMode: LayerMode): void {
+  targets.mesh.visible = layerMode === "mesh";
+  targets.splat.visible = layerMode === "splat";
+}
+
+function waitForAnimationFrame(): Promise<void> {
+  return new Promise((resolve) => {
+    requestAnimationFrame(() => resolve());
+  });
 }
 
 function clonePoint(point: PointLike): PointLike {
@@ -699,6 +755,8 @@ function applyOrbitFrame(view: SceneViewLike, stopState: TourStopState, progress
 }
 
 export function App(): JSX.Element {
+  const layerModeRef = useRef<LayerMode>("mesh");
+  const layerTargetsRef = useRef<LayerTargets | null>(null);
   const progressRingRef = useRef<SVGCircleElement | null>(null);
   const sceneRef = useRef<SceneElement | null>(null);
   const tourFrameRef = useRef<number | null>(null);
@@ -707,10 +765,27 @@ export function App(): JSX.Element {
   const [appliedSlideId, setAppliedSlideId] = useState<string | null>(null);
   const [isTextExpanded, setIsTextExpanded] = useState(false);
   const [isTourPlaying, setIsTourPlaying] = useState(false);
+  const [layerMode, setLayerMode] = useState<LayerMode>("mesh");
   const [loadError, setLoadError] = useState<string | null>(null);
   const [sceneReady, setSceneReady] = useState(false);
+  const [showLayerSwitch, setShowLayerSwitch] = useState(false);
   const [slides, setSlides] = useState<SlideModel[]>([]);
   const [tourProgress, setTourProgress] = useState(0);
+
+  const applyPersistedLayerMode = (nextMode = layerModeRef.current): void => {
+    if (layerTargetsRef.current) {
+      applyLayerModeToTargets(layerTargetsRef.current, nextMode);
+    }
+  };
+
+  const setPersistentLayerMode = (nextMode: LayerMode, syncState = true): void => {
+    layerModeRef.current = nextMode;
+    applyPersistedLayerMode(nextMode);
+
+    if (syncState) {
+      setLayerMode(nextMode);
+    }
+  };
 
   const syncTourProgress = (progress: number, syncState = false): void => {
     const normalizedProgress = Math.max(0, Math.min(1, progress));
@@ -789,6 +864,11 @@ export function App(): JSX.Element {
           }
         }
 
+        layerTargetsRef.current = resolveLayerTargets(sceneView?.map ?? webScene);
+        setShowLayerSwitch(Boolean(layerTargetsRef.current));
+        setPersistentLayerMode("mesh", false);
+        setLayerMode("mesh");
+
         setSlides(slideModels);
         setActiveSlideId(initialSlide.id);
         setAppliedSlideId(null);
@@ -834,18 +914,30 @@ export function App(): JSX.Element {
 
     let isCancelled = false;
 
-    const applySlide =
-      typeof sourceSlide?.applyTo === "function"
-        ? sourceSlide.applyTo(sceneView)
-        : activeSlide.viewpoint
-          ? sceneView.goTo(activeSlide.viewpoint, { animate: true })
-          : Promise.resolve();
+    const applySlideToView = typeof sourceSlide?.applyTo === "function" ? sourceSlide.applyTo.bind(sourceSlide) : null;
+    const applySlide = applySlideToView
+      ? (async () => {
+          const slideApplyPromise = applySlideToView(sceneView);
+
+          applyPersistedLayerMode();
+          await waitForAnimationFrame();
+          applyPersistedLayerMode();
+
+          await slideApplyPromise;
+        })()
+      : activeSlide.viewpoint
+        ? sceneView.goTo(activeSlide.viewpoint, { animate: true })
+        : Promise.resolve();
 
     void applySlide
       .then(() => {
         if (isCancelled) {
           return;
         }
+
+        layerTargetsRef.current = resolveLayerTargets(sceneView.map ?? null);
+        setShowLayerSwitch(Boolean(layerTargetsRef.current));
+        applyPersistedLayerMode();
 
         setAppliedSlideId(activeSlide.id);
         setLoadError(null);
@@ -1027,6 +1119,20 @@ export function App(): JSX.Element {
     setIsTourPlaying(true);
   };
 
+  const handleLayerModeSelect = (): void => {
+    if (!showLayerSwitch) {
+      return;
+    }
+
+    const nextMode: LayerMode = layerMode === "mesh" ? "splat" : "mesh";
+
+    setPersistentLayerMode(nextMode);
+    setLoadError(null);
+  };
+
+  const nextLayerMode: LayerMode = layerMode === "mesh" ? "splat" : "mesh";
+  const nextLayerLabel = nextLayerMode === "mesh" ? "Mesh" : "Gaussian Splat";
+
   return (
     <calcite-shell content-behind>
       <arcgis-scene
@@ -1118,6 +1224,19 @@ export function App(): JSX.Element {
               <span className="tour-toggle-icon" />
             </button>
           </div>
+          {showLayerSwitch ? (
+            <div className="layer-switch">
+              <button
+                aria-label={`Switch to ${nextLayerLabel} layer`}
+                className="layer-switch-button"
+                onClick={handleLayerModeSelect}
+                type="button"
+              >
+                <span aria-hidden="true" className="layer-switch-icon" />
+                <span className="layer-switch-label">{nextLayerLabel}</span>
+              </button>
+            </div>
+          ) : null}
         </div>
       ) : null}
       {statusMessage ? <div className="scene-status">{statusMessage}</div> : null}
