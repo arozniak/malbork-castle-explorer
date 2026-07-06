@@ -221,6 +221,12 @@ Before changing any readability effects, focus only on:
 Please explain how you would adjust the layout before making code changes. Remember to save this prompt to prompts.md file.
 ```
 
+## 2026-07-06 - Engineering review implementation plan request
+
+```text
+I would like to work on fixing issues 1) The main component is carrying too many responsibilities and 2) Hand-written ArcGIS facsimile types reduce type safety and increase drift risk from engineering review report. I would like you to prepare an implementation plan for fixing these and save it as a section in the same file.
+```
+
 ## 2026-07-02 - Implement intro paragraph layout changes
 
 ```text
@@ -523,4 +529,32 @@ I reviewed the document. Follow up with these tasks next:
 - Add a short documentation note explaining the `@arcgis/core` usage. The minimal acceptable note is that Map Components do not expose the geometry helpers needed for the custom orbit/tour camera math, so `Point`, geodesic calculations, and Web Mercator conversion helpers were pulled from `@arcgis/core`. For all usage of core components make sure that there is indeed no way to achieve this with the map components. 
 - Mark bootstrap-only constraints more explicitly as historical in [documentation/technical-constraints.md](documentation/technical-constraints.md), especially the "generated source code unchanged for this step" rule, so future compliance reviews do not treat normal implementation work as a failure.
 - Add a brief "implementation references used" section to documentation for higher-risk features such as guided tour motion, slide application, and layer switching. That would make the "prefer official ArcGIS references" constraint auditable instead of inferred.
+```
+
+## 2026-07-06 - Senior engineering review report request
+
+```text
+Act as a senior TypeScript, React, and ArcGIS Maps SDK engineer. Do not modify any code.
+
+Review the codebase and identify:
+- technical risks
+- fragile implementations
+- maintainability issues
+- performance concerns
+- overly complex code
+- areas likely to cause future bugs
+
+For each finding include:
+- Severity
+- Evidence
+- Why it matters
+- Recommendation
+
+Create a markdown report in the documentation folder.
+```
+
+## 2026-07-06 - Shorten engineering review and exclude bugs
+
+```text
+okay, that's waaaaay too much text as an outcome. also dont find things which are considered bugs
 ```
