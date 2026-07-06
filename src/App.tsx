@@ -172,6 +172,8 @@ interface TourMotionConfig {
   sweepDegrees: number;
 }
 
+type ReapplyLayerMode = () => void;
+
 function toArray<T>(collection: SlidesCollectionLike<T> | readonly T[] | null | undefined): T[] {
   if (!collection) {
     return [];
@@ -262,6 +264,31 @@ function groupSentencesIntoParagraphs(sentences: string[]): string[] {
   }
 
   return paragraphs;
+}
+
+async function applySlideToSceneView(
+  sceneView: SceneViewLike,
+  activeSlide: SlideModel,
+  reapplyLayerMode: ReapplyLayerMode,
+  animate: boolean,
+): Promise<void> {
+  const sourceSlide = activeSlide.slide as SceneSlideLike | undefined;
+  const applySlideToView = typeof sourceSlide?.applyTo === "function" ? sourceSlide.applyTo.bind(sourceSlide) : null;
+
+  if (applySlideToView) {
+    const slideApplyPromise = applySlideToView(sceneView);
+
+    reapplyLayerMode();
+    await waitForAnimationFrame();
+    reapplyLayerMode();
+
+    await slideApplyPromise;
+    return;
+  }
+
+  if (activeSlide.viewpoint) {
+    await sceneView.goTo(activeSlide.viewpoint, { animate });
+  }
 }
 
 function buildTextParagraphs(description: string): {
@@ -899,7 +926,6 @@ export function App(): JSX.Element {
     const sceneElement = sceneRef.current as (SceneElement & { view?: SceneViewLike | null }) | null;
     const sceneView = sceneElement?.view;
     const activeSlide = slides.find((slide) => slide.id === activeSlideId);
-    const sourceSlide = activeSlide?.slide as SceneSlideLike | undefined;
 
     if (!sceneView || !activeSlide) {
       return;
@@ -914,20 +940,7 @@ export function App(): JSX.Element {
 
     let isCancelled = false;
 
-    const applySlideToView = typeof sourceSlide?.applyTo === "function" ? sourceSlide.applyTo.bind(sourceSlide) : null;
-    const applySlide = applySlideToView
-      ? (async () => {
-          const slideApplyPromise = applySlideToView(sceneView);
-
-          applyPersistedLayerMode();
-          await waitForAnimationFrame();
-          applyPersistedLayerMode();
-
-          await slideApplyPromise;
-        })()
-      : activeSlide.viewpoint
-        ? sceneView.goTo(activeSlide.viewpoint, { animate: true })
-        : Promise.resolve();
+    const applySlide = applySlideToSceneView(sceneView, activeSlide, applyPersistedLayerMode, true);
 
     void applySlide
       .then(() => {
@@ -1106,17 +1119,37 @@ export function App(): JSX.Element {
       return;
     }
 
-    if (
-      !tourStateRef.current ||
-      tourStateRef.current.slideId !== currentSlide.id ||
-      tourStateRef.current.elapsedMs >= tourStateRef.current.durationMs
-    ) {
+    const startTour = async (): Promise<void> => {
+      const sceneElement = sceneRef.current as (SceneElement & { view?: SceneViewLike | null }) | null;
+      const sceneView = sceneElement?.view;
+
+      if (!sceneView) {
+        return;
+      }
+
+      cancelTourFrame();
       tourStateRef.current = null;
       syncTourProgress(0, true);
-    }
+      setAppliedSlideId(null);
+      setLoadError(null);
 
-    setLoadError(null);
-    setIsTourPlaying(true);
+      try {
+        await applySlideToSceneView(sceneView, currentSlide, applyPersistedLayerMode, true);
+
+        layerTargetsRef.current = resolveLayerTargets(sceneView.map ?? null);
+        setShowLayerSwitch(Boolean(layerTargetsRef.current));
+        applyPersistedLayerMode();
+
+        setAppliedSlideId(currentSlide.id);
+        setIsTourPlaying(true);
+      } catch {
+        setLoadError(`Unable to move to ${currentSlide.title}.`);
+        setAppliedSlideId(null);
+        stopTour();
+      }
+    };
+
+    void startTour();
   };
 
   const handleLayerModeSelect = (): void => {

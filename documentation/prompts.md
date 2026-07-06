@@ -494,3 +494,9 @@ okay, actually bring back the icon, now the button is too plain. do you have any
 ```text
 I changed my mind again, looking at the buttons. Redesign the layer switch chip using a dark translucent glass style. Keep the bottom-right placement and current functionality. Reduce the chip height by about 15–20%, reduce horizontal padding, use white text, a subtle light border, and a slightly transparent dark background. Keep the Play button unchanged. The layer switch should look like a secondary utility control, while the Play button remains the primary visual focus.
 ```
+
+## 2026-07-06 - Reset camera before tour starts
+
+```text
+I tested the app a bit and found a bug with the play/tour mode. Before starting the tour rotation, reset the camera to the selected location's initial viewpoint. Only after the camera reaches that viewpoint should the rotation animation begin. This should happen every time Play is pressed, even if the user has manually moved the camera beforehand.
+```
