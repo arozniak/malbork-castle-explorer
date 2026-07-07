@@ -221,12 +221,6 @@ Before changing any readability effects, focus only on:
 Please explain how you would adjust the layout before making code changes. Remember to save this prompt to prompts.md file.
 ```
 
-## 2026-07-06 - Engineering review implementation plan request
-
-```text
-I would like to work on fixing issues 1) The main component is carrying too many responsibilities and 2) Hand-written ArcGIS facsimile types reduce type safety and increase drift risk from engineering review report. I would like you to prepare an implementation plan for fixing these and save it as a section in the same file.
-```
-
 ## 2026-07-02 - Implement intro paragraph layout changes
 
 ```text
@@ -356,24 +350,6 @@ Before proposing any code changes, please answer: How should the orbit center fo
 
 ```text
 okay, try to implement this and let's see how it looks like.
-```
-
-## 2026-07-07 - Cleanup step 1 request
-
-```text
-okay, you can then move on with suggested order fixing things step 1
-```
-
-## 2026-07-07 - Cleanup step 2 request
-
-```text
-yes, move on to step 2
-```
-
-## 2026-07-07 - Cleanup step 3 request
-
-```text
-move on to step 3
 ```
 
 ## 2026-07-03 - Tour jumps to wrong place feedback
@@ -572,6 +548,12 @@ Create a markdown report in the documentation folder.
 okay, that's waaaaay too much text as an outcome. also dont find things which are considered bugs
 ```
 
+## 2026-07-06 - Engineering review implementation plan request
+
+```text
+I would like to work on fixing issues 1) The main component is carrying too many responsibilities and 2) Hand-written ArcGIS facsimile types reduce type safety and increase drift risk from engineering review report. I would like you to prepare an implementation plan for fixing these and save it as a section in the same file.
+```
+
 ## 2026-07-06 - Move on with phase 1
 
 ```text
@@ -616,4 +598,51 @@ Do not repeat findings already covered in previous reviews. Create a markdown su
 
 ```text
 move on to phase 5
+```
+## 2026-07-07 - Cleanup step 1 request
+
+```text
+okay, you can then move on with suggested order fixing things step 1
+```
+
+## 2026-07-07 - Cleanup step 2 request
+
+```text
+yes, move on to step 2
+```
+
+## 2026-07-07 - Cleanup step 3 request
+
+```text
+move on to step 3
+```
+
+## 2026-07-07 - Slide-model App issue request
+
+```text
+first, there seem to be side issue with the slide-model ikn the app.tsx file
+```
+
+## 2026-07-07 - Expanded text disables controls bug
+
+```text
+bug 1: when the text is in the expanded mode, the layer switch and map controls should be disabled.
+```
+
+## 2026-07-07 - Tour pause resume continuity bug
+
+```text
+Bug 2: issue with the play/tour mode. After the user clicks pause, and then presses play again, the movement and timing should be continued, and not start from the beginning
+```
+
+## 2026-07-07 - Progress bar live update regression
+
+```text
+okay, that bug was fixed, but you  introduced another one. now the progress bar doesn't update live, please bring the progress bar behavior back.
+```
+
+## 2026-07-07 - Remove loading web scene status
+
+```text
+bug 3: please remove the "loading web scene" from the left bottom of the screen
 ```

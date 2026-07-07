@@ -114,6 +114,7 @@ export function SceneOverlay({
           <button
             aria-label={`Switch to ${nextLayerLabel} layer`}
             className="layer-switch-button"
+            disabled={isTextExpanded}
             onClick={onLayerModeSelect}
             type="button"
           >

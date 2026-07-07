@@ -13,7 +13,7 @@ import {
   refreshLayerTargetsAfterSlide,
   toArray,
 } from "./scene-runtime-utils";
-import { buildSlideModel, type SlideModel } from "./slide-model";
+import { buildSlideModel, type SlideModel } from "./slide-model.ts";
 import {
   TOUR_PROGRESS_CIRCUMFERENCE,
   applyOrbitFrame,
@@ -64,12 +64,10 @@ export function App(): JSX.Element {
     }
   };
 
-  const syncTourProgress = (progress: number, syncState = false): void => {
+  const syncTourProgress = (progress: number): void => {
     const normalizedProgress = Math.max(0, Math.min(1, progress));
 
-    if (syncState) {
-      setTourProgress(normalizedProgress);
-    }
+    setTourProgress(normalizedProgress);
   };
 
   const refreshLayerTargets = (scene: WebSceneLike | null | undefined): void => {
@@ -91,7 +89,7 @@ export function App(): JSX.Element {
     if (tourStateRef.current) {
       tourStateRef.current.startedAtMs = null;
     }
-    syncTourProgress(tourStateRef.current ? tourStateRef.current.elapsedMs / tourStateRef.current.durationMs : 0, true);
+    syncTourProgress(tourStateRef.current ? tourStateRef.current.elapsedMs / tourStateRef.current.durationMs : 0);
     setIsTourPlaying(false);
   };
 
@@ -99,7 +97,7 @@ export function App(): JSX.Element {
     cancelTourFrame();
     tourStateRef.current = null;
     setIsTourPlaying(false);
-    syncTourProgress(0, true);
+    syncTourProgress(0);
   };
 
   useEffect(() => {
@@ -185,7 +183,7 @@ export function App(): JSX.Element {
 
     if (tourStateRef.current?.slideId !== activeSlide.id) {
       tourStateRef.current = null;
-      syncTourProgress(0, true);
+      syncTourProgress(0);
     }
 
     setAppliedSlideId(null);
@@ -282,7 +280,7 @@ export function App(): JSX.Element {
       }
 
       tourStateRef.current = nextStopState;
-      syncTourProgress(0, true);
+      syncTourProgress(0);
       applyOrbitFrame(sceneView, nextStopState, 0);
     }
 
@@ -312,13 +310,13 @@ export function App(): JSX.Element {
         if (activeSlideIndex < 0 || activeSlideIndex >= slides.length - 1) {
           cancelTourFrame();
           setIsTourPlaying(false);
-          syncTourProgress(1, true);
+          syncTourProgress(1);
           return;
         }
 
         cancelTourFrame();
         tourStateRef.current = null;
-        syncTourProgress(0, true);
+        syncTourProgress(0);
         setActiveSlideId(slides[activeSlideIndex + 1].id);
         return;
       }
@@ -343,7 +341,7 @@ export function App(): JSX.Element {
   }, []);
 
   const currentSlide = slides.find((slide) => slide.id === activeSlideId) ?? null;
-  const statusMessage = loadError || (!sceneReady ? "Loading Malbork Web Scene..." : null);
+  const statusMessage = loadError;
   const sceneLabel = currentSlide
     ? `Malbork Castle 3D scene. Active stop: ${currentSlide.title}.`
     : "Malbork Castle 3D scene.";
@@ -368,6 +366,18 @@ export function App(): JSX.Element {
       return;
     }
 
+    const existingStopState = tourStateRef.current;
+
+    if (
+      existingStopState &&
+      existingStopState.slideId === currentSlide.id &&
+      existingStopState.elapsedMs < existingStopState.durationMs
+    ) {
+      setLoadError(null);
+      setIsTourPlaying(true);
+      return;
+    }
+
     const startTour = async (): Promise<void> => {
       const sceneElement = sceneRef.current;
       const sceneView = getSceneViewFromElement(sceneElement);
@@ -378,7 +388,7 @@ export function App(): JSX.Element {
 
       cancelTourFrame();
       tourStateRef.current = null;
-      syncTourProgress(0, true);
+      syncTourProgress(0);
       setAppliedSlideId(null);
       setLoadError(null);
 
@@ -422,7 +432,12 @@ export function App(): JSX.Element {
         popupDisabled
         ref={sceneRef}
       />
-      <div aria-label="Map controls" className="scene-controls">
+      <div
+        aria-disabled={isTextExpanded}
+        aria-label="Map controls"
+        className={`scene-controls${isTextExpanded ? " is-disabled" : ""}`}
+        inert={isTextExpanded ? true : undefined}
+      >
         <arcgis-home referenceElement={SCENE_ELEMENT_ID} />
         <arcgis-zoom referenceElement={SCENE_ELEMENT_ID} />
         <arcgis-compass referenceElement={SCENE_ELEMENT_ID} />

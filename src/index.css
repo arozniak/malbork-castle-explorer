@@ -31,6 +31,14 @@ arcgis-scene {
   pointer-events: auto;
 }
 
+.scene-controls.is-disabled {
+  opacity: 0.58;
+}
+
+.scene-controls.is-disabled > * {
+  pointer-events: none;
+}
+
 .scene-overlay {
   inset: 0;
   isolation: isolate;
@@ -249,6 +257,12 @@ arcgis-scene {
   color: #ffffff;
   outline: none;
   transform: translateY(-1px);
+}
+
+.layer-switch-button:disabled {
+  cursor: default;
+  opacity: 0.58;
+  transform: none;
 }
 
 .layer-switch-icon {
