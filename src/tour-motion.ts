@@ -3,12 +3,12 @@ import * as geodesicUtils from "@arcgis/core/geometry/support/geodesicUtils";
 import * as webMercatorUtils from "@arcgis/core/geometry/support/webMercatorUtils";
 
 import type { SlideModel } from "./slide-model";
+import { toArray } from "./scene-runtime-utils";
 import type {
 	CameraLike,
 	ExtentLike,
 	GeometryLike,
 	PointLike,
-	RuntimeCollectionLike,
 	SceneSlideLike,
 	SceneViewLike,
 	SpatialReferenceLike,
@@ -43,28 +43,6 @@ export interface TourMotionConfig {
 	durationMs: number;
 	radiusMultiplier: number;
 	sweepDegrees: number;
-}
-
-function toArray<T>(collection: RuntimeCollectionLike<T> | readonly T[] | null | undefined): T[] {
-	if (!collection) {
-		return [];
-	}
-
-	if (Array.isArray(collection)) {
-		return [...collection];
-	}
-
-	const runtimeCollection = collection as RuntimeCollectionLike<T>;
-
-	if (typeof runtimeCollection.toArray === "function") {
-		return runtimeCollection.toArray();
-	}
-
-	if (runtimeCollection[Symbol.iterator]) {
-		return Array.from(runtimeCollection as Iterable<T>);
-	}
-
-	return [];
 }
 
 function clonePoint(point: PointLike): PointLike {

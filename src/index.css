@@ -450,15 +450,6 @@ arcgis-scene {
     width: 7.4rem;
   }
 
-  .layer-switch-thumb {
-    height: 4.7rem;
-  }
-
-  .layer-switch-badge {
-    font-size: 0.68rem;
-    margin: 0.4rem;
-  }
-
   .tour-toggle {
     height: 4.3rem;
     width: 4.3rem;

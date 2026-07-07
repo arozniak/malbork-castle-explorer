@@ -1,52 +1,66 @@
-# ArcGIS Maps SDK for JavaScript Vite React 19 TSX template
+# Malbork Castle Explorer
 
-📁 **[Click here to download this directory as a ZIP file](https://esri.github.io/jsapi-resources/zips/js-maps-sdk-react.zip)** 📁
+Malbork Castle Explorer is a full-screen 3D web experience built with React, Vite, ArcGIS Map Components, and Calcite. The application uses an ArcGIS Web Scene as the source of truth and presents slide-driven exploration, descriptive text overlays, a guided tour mode, and a layer toggle between mesh and Gaussian splat views.
 
-This template demonstrates how to use the [ArcGIS Maps SDK for JavaScript](https://developers.arcgis.com/javascript/latest/) in a Vite React 19 TSX application.
+## Current Features
 
-## Run locally
+- Loads the public Malbork Web Scene `a032056172494a81a2105ef9232ea9a9`.
+- Builds the top navigation from the scene presentation slides.
+- Shows intro and expanded descriptive text from slide descriptions.
+- Supports a guided tour with per-stop progress and orbit motion.
+- Lets the user switch between mesh and Gaussian splat layers.
+- Keeps user interactions in control: clicks and text expansion pause automation.
 
-From the project root, install dependencies and start the Vite development server:
+## Tech Stack
+
+- React 19
+- Vite
+- TypeScript
+- `@arcgis/map-components`
+- `@arcgis/core` for tour geometry and spatial-reference math
+- `@esri/calcite-components`
+
+## Project Structure
+
+- [src/App.tsx](src/App.tsx): top-level scene bootstrap, state, effects, and event orchestration.
+- [src/scene-overlay.tsx](src/scene-overlay.tsx): presentational overlay UI for tabs, text, tour control, and layer switch.
+- [src/slide-model.ts](src/slide-model.ts): slide normalization and text shaping.
+- [src/layer-mode.ts](src/layer-mode.ts): layer target resolution and visibility switching.
+- [src/tour-motion.ts](src/tour-motion.ts): orbit motion, progress math, and camera-frame application.
+- [src/scene-runtime-types.ts](src/scene-runtime-types.ts): shared runtime adapter types and scene element bridge.
+- [documentation/](documentation): project notes, technical constraints, prompts log, and review documents.
+
+## Run Locally
+
+From the project root:
 
 ```bash
 npm install
 npm run dev
 ```
 
-Vite will print a local URL, typically `http://localhost:5173`, which you can open in your browser.
+Vite will print a local URL, typically `http://localhost:5173`.
 
-For a production build and local preview:
+## Build
 
 ```bash
 npm run build
 npm run preview
 ```
 
-## Get started
+The current production build succeeds. Vite still reports a chunk-size warning, which is tracked as a cleanup and optimization follow-up rather than a functional build failure.
 
-To quickly scaffold a new application using this template, run the following command in your terminal:
+## Constraints
 
-```bash
-npx @arcgis/create -n my-arcgis-app -t react
-```
+- No authentication, OAuth, or sign-in flow.
+- ArcGIS Map Components are the preferred integration surface.
+- Direct `@arcgis/core` usage is intentionally limited to custom tour-motion and geometry work that Map Components do not cover.
+- UI should remain minimal and unobtrusive over the full-screen scene.
 
-This template uses the following packages:
+## Additional Documentation
 
-- [`@arcgis/core`](https://www.npmjs.com/package/@arcgis/core)
-- [`@arcgis/map-components`](https://www.npmjs.com/package/@arcgis/map-components)
-- [`@arcgis/charts-components`](https://www.npmjs.com/package/@arcgis/charts-components)
-- [`@esri/calcite-components`](https://www.npmjs.com/package/@esri/calcite-components)
-
-## TypeScript
-
-This template is configured to use TypeScript. If you prefer to use JavaScript, you can:
-
-- Remove the `tsconfig.json` file
-- Update the file extensions from `.tsx` to `.jsx`
-- Remove the `vite.env.d.ts` file
-- Remove the `typescript` dependency from `package.json`
-- Remove the `@types/node`, `@types/react` and `@types/react-dom` dev dependencies from `package.json`
-
-## Resources
-
-See the [Get started with npm guide](https://developers.arcgis.com/javascript/latest/get-started/#use-arcgiscreate) for full instructions.
+- [documentation/technical-constraints.md](documentation/technical-constraints.md)
+- [documentation/project-decisions.md](documentation/project-decisions.md)
+- [documentation/engineering-review-report.md](documentation/engineering-review-report.md)
+- [documentation/cleanup-review-summary.md](documentation/cleanup-review-summary.md)
+- [documentation/prompts.md](documentation/prompts.md)

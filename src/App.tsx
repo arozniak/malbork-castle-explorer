@@ -3,13 +3,16 @@ import { useEffect, useRef, useState, type JSX } from "react";
 import {
   getSceneViewFromElement,
   type LayerTargets,
-  type RuntimeCollectionLike,
   type SceneElement,
-  type SceneViewLike,
   type WebSceneLike,
 } from "./scene-runtime-types";
-import { applyLayerModeToTargets, resolveLayerTargets, type LayerMode } from "./layer-mode";
+import { applyLayerModeToTargets, type LayerMode } from "./layer-mode";
 import { SceneOverlay } from "./scene-overlay";
+import {
+  applySlideToSceneView,
+  refreshLayerTargetsAfterSlide,
+  toArray,
+} from "./scene-runtime-utils";
 import { buildSlideModel, type SlideModel } from "./slide-model";
 import {
   TOUR_PROGRESS_CIRCUMFERENCE,
@@ -29,65 +32,9 @@ import "@esri/calcite-components/components/calcite-shell";
 const MALBORK_WEB_SCENE_ID = "a032056172494a81a2105ef9232ea9a9";
 const SCENE_ELEMENT_ID = "malbork-scene";
 
-type ReapplyLayerMode = () => void;
-
-function toArray<T>(collection: RuntimeCollectionLike<T> | readonly T[] | null | undefined): T[] {
-  if (!collection) {
-    return [];
-  }
-
-  if (Array.isArray(collection)) {
-    return [...collection];
-  }
-
-  const iterableCollection = collection as RuntimeCollectionLike<T>;
-
-  if (typeof iterableCollection.toArray === "function") {
-    return iterableCollection.toArray();
-  }
-
-  if (iterableCollection[Symbol.iterator]) {
-    return Array.from(iterableCollection as Iterable<T>);
-  }
-
-  return [];
-}
-
-async function applySlideToSceneView(
-  sceneView: SceneViewLike,
-  activeSlide: SlideModel,
-  reapplyLayerMode: ReapplyLayerMode,
-  animate: boolean,
-): Promise<void> {
-  const sourceSlide = activeSlide.slide;
-  const applySlideToView = typeof sourceSlide?.applyTo === "function" ? sourceSlide.applyTo.bind(sourceSlide) : null;
-
-  if (applySlideToView) {
-    const slideApplyPromise = applySlideToView(sceneView);
-
-    reapplyLayerMode();
-    await waitForAnimationFrame();
-    reapplyLayerMode();
-
-    await slideApplyPromise;
-    return;
-  }
-
-  if (activeSlide.viewpoint) {
-    await sceneView.goTo(activeSlide.viewpoint, { animate });
-  }
-}
-
-function waitForAnimationFrame(): Promise<void> {
-  return new Promise((resolve) => {
-    requestAnimationFrame(() => resolve());
-  });
-}
-
 export function App(): JSX.Element {
   const layerModeRef = useRef<LayerMode>("mesh");
   const layerTargetsRef = useRef<LayerTargets | null>(null);
-  const progressRingRef = useRef<SVGCircleElement | null>(null);
   const sceneRef = useRef<SceneElement | null>(null);
   const tourFrameRef = useRef<number | null>(null);
   const tourStateRef = useRef<TourStopState | null>(null);
@@ -120,13 +67,16 @@ export function App(): JSX.Element {
   const syncTourProgress = (progress: number, syncState = false): void => {
     const normalizedProgress = Math.max(0, Math.min(1, progress));
 
-    if (progressRingRef.current) {
-      progressRingRef.current.setAttribute("stroke-dashoffset", `${getProgressDashOffset(normalizedProgress)}`);
-    }
-
     if (syncState) {
       setTourProgress(normalizedProgress);
     }
+  };
+
+  const refreshLayerTargets = (scene: WebSceneLike | null | undefined): void => {
+    const { nextTargets, showLayerSwitch: nextShowLayerSwitch } = refreshLayerTargetsAfterSlide(scene, layerModeRef.current);
+
+    layerTargetsRef.current = nextTargets;
+    setShowLayerSwitch(nextShowLayerSwitch);
   };
 
   const cancelTourFrame = (): void => {
@@ -194,8 +144,7 @@ export function App(): JSX.Element {
           }
         }
 
-        layerTargetsRef.current = resolveLayerTargets(sceneView?.map ?? webScene);
-        setShowLayerSwitch(Boolean(layerTargetsRef.current));
+        refreshLayerTargets(sceneView?.map ?? webScene);
         setPersistentLayerMode("mesh", false);
         setLayerMode("mesh");
 
@@ -251,9 +200,7 @@ export function App(): JSX.Element {
           return;
         }
 
-        layerTargetsRef.current = resolveLayerTargets(sceneView.map ?? null);
-        setShowLayerSwitch(Boolean(layerTargetsRef.current));
-        applyPersistedLayerMode();
+        refreshLayerTargets(sceneView.map ?? null);
 
         setAppliedSlideId(activeSlide.id);
         setLoadError(null);
@@ -438,9 +385,7 @@ export function App(): JSX.Element {
       try {
         await applySlideToSceneView(sceneView, currentSlide, applyPersistedLayerMode, true);
 
-        layerTargetsRef.current = resolveLayerTargets(sceneView.map ?? null);
-        setShowLayerSwitch(Boolean(layerTargetsRef.current));
-        applyPersistedLayerMode();
+        refreshLayerTargets(sceneView.map ?? null);
 
         setAppliedSlideId(currentSlide.id);
         setIsTourPlaying(true);
@@ -495,7 +440,6 @@ export function App(): JSX.Element {
           onTextExpandedChange={setIsTextExpanded}
           onTourToggle={handleTourToggle}
           progressOffset={progressOffset}
-          progressRingRef={progressRingRef}
           showLayerSwitch={showLayerSwitch}
           slides={slides}
           tourProgressCircumference={TOUR_PROGRESS_CIRCUMFERENCE}

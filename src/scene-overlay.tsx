@@ -1,5 +1,3 @@
-import type { RefObject } from "react";
-
 import type { SlideModel } from "./slide-model";
 
 interface SceneOverlayProps {
@@ -14,7 +12,6 @@ interface SceneOverlayProps {
   onTextExpandedChange: (expanded: boolean) => void;
   onTourToggle: () => void;
   progressOffset: number;
-  progressRingRef: RefObject<SVGCircleElement | null>;
   showLayerSwitch: boolean;
   slides: SlideModel[];
   tourProgressCircumference: number;
@@ -32,7 +29,6 @@ export function SceneOverlay({
   onTextExpandedChange,
   onTourToggle,
   progressOffset,
-  progressRingRef,
   showLayerSwitch,
   slides,
   tourProgressCircumference,
@@ -102,7 +98,6 @@ export function SceneOverlay({
           <svg aria-hidden="true" className="tour-progress" viewBox="0 0 44 44">
             <circle className="tour-progress-track" cx="22" cy="22" r="18" />
             <circle
-              ref={progressRingRef}
               className="tour-progress-value"
               cx="22"
               cy="22"

@@ -358,6 +358,24 @@ Before proposing any code changes, please answer: How should the orbit center fo
 okay, try to implement this and let's see how it looks like.
 ```
 
+## 2026-07-07 - Cleanup step 1 request
+
+```text
+okay, you can then move on with suggested order fixing things step 1
+```
+
+## 2026-07-07 - Cleanup step 2 request
+
+```text
+yes, move on to step 2
+```
+
+## 2026-07-07 - Cleanup step 3 request
+
+```text
+move on to step 3
+```
+
 ## 2026-07-03 - Tour jumps to wrong place feedback
 
 ```text
@@ -576,6 +594,22 @@ move on with phase 3
 
 ```text
 move on to phase 4
+```
+
+## 2026-07-06 - Cleanup review request
+
+```text
+Okay, next, let's do a cleanup. Do not modify any code, but instead identify: 
+
+- dead code
+- unused files
+- unused imports
+- unused CSS
+- obsolete experiments
+- duplicate logic
+- cleanup opportunities
+
+Do not repeat findings already covered in previous reviews. Create a markdown summary in the documentation folder and note the recommended action. Make it clear and concise.
 ```
 
 ## 2026-07-06 - Move on with phase 5

@@ -1,31 +1,10 @@
-import type { LayerLike, LayerTargets, RuntimeCollectionLike, WebSceneLike } from "./scene-runtime-types";
+import type { LayerLike, LayerTargets, WebSceneLike } from "./scene-runtime-types";
+import { toArray } from "./scene-runtime-utils";
 
 const GAUSSIAN_SPLAT_LAYER_TITLE = "Malbork_GUGiK_GaussianSplat";
 const INTEGRATED_MESH_LAYER_TITLE = "Malbork_GUGiK_3Dmesh";
 
 export type LayerMode = "mesh" | "splat";
-
-function toArray<T>(collection: RuntimeCollectionLike<T> | readonly T[] | null | undefined): T[] {
-  if (!collection) {
-    return [];
-  }
-
-  if (Array.isArray(collection)) {
-    return [...collection];
-  }
-
-  const runtimeCollection = collection as RuntimeCollectionLike<T>;
-
-  if (typeof runtimeCollection.toArray === "function") {
-    return runtimeCollection.toArray();
-  }
-
-  if (runtimeCollection[Symbol.iterator]) {
-    return Array.from(runtimeCollection as Iterable<T>);
-  }
-
-  return [];
-}
 
 function normalizeLayerIdentity(value: string | undefined | null): string {
   return (value ?? "").trim().toLowerCase();
