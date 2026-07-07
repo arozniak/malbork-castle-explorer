@@ -249,6 +249,18 @@ Please review the layout and identify why the intro paragraph is being repositio
 okay, try to implement this
 ```
 
+## 2026-07-02 - Local run instructions request
+
+```text
+how can I run this project locally?
+```
+
+## 2026-07-02 - Add local run instructions to README
+
+```text
+add those instructions to the README.md file
+```
+
 ## 2026-07-02 - Push project to GitHub request
 
 ```text
@@ -495,6 +507,11 @@ okay, actually bring back the icon, now the button is too plain. do you have any
 I changed my mind again, looking at the buttons. Redesign the layer switch chip using a dark translucent glass style. Keep the bottom-right placement and current functionality. Reduce the chip height by about 15–20%, reduce horizontal padding, use white text, a subtle light border, and a slightly transparent dark background. Keep the Play button unchanged. The layer switch should look like a secondary utility control, while the Play button remains the primary visual focus.
 ```
 
+## 2026-07-06 - Reset camera before tour starts
+
+```text
+I tested the app a bit and found a bug with the play/tour mode. Before starting the tour rotation, reset the camera to the selected location's initial viewpoint. Only after the camera reaches that viewpoint should the rotation animation begin. This should happen every time Play is pressed, even if the user has manually moved the camera beforehand.
+```
 
 ## 2026-07-06 - Technical constraints compliance review request
 
@@ -578,6 +595,12 @@ move on with phase 3
 move on to phase 4
 ```
 
+## 2026-07-06 - Move on with phase 5
+
+```text
+move on to phase 5
+```
+
 ## 2026-07-06 - Cleanup review request
 
 ```text
@@ -594,11 +617,18 @@ Okay, next, let's do a cleanup. Do not modify any code, but instead identify:
 Do not repeat findings already covered in previous reviews. Create a markdown summary in the documentation folder and note the recommended action. Make it clear and concise.
 ```
 
-## 2026-07-06 - Move on with phase 5
+## 2026-07-07 - Cleanup summary follow-up question
 
 ```text
-move on to phase 5
+I removed a few items from the notes that I did not agree with. There are 6 points in the findings now, but only 3 points in the "suggested order". why is that?
 ```
+
+## 2026-07-07 - Cleanup summary renumbering request
+
+```text
+Sure, you can renumber the findings and actions. Just mention which finding number is fixed in which action step and that's enough
+```
+
 ## 2026-07-07 - Cleanup step 1 request
 
 ```text
@@ -615,6 +645,12 @@ yes, move on to step 2
 
 ```text
 move on to step 3
+```
+
+## 2026-07-07 - Bug review kickoff request
+
+```text
+okay, now it's time to fix bugs and other issues. I have a few listed. are you already aware of any bugs?
 ```
 
 ## 2026-07-07 - Slide-model App issue request
