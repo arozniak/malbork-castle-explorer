@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState, type JSX } from "react";
+import { flushSync } from "react-dom";
 
 import {
   getSceneViewFromElement,
@@ -262,6 +263,7 @@ const applySceneAttributionContent = (element: HTMLElement | null): boolean => {
 export function App(): JSX.Element {
   const layerModeRef = useRef<LayerMode>("mesh");
   const layerTargetsRef = useRef<LayerTargets | null>(null);
+  const lastTourProgressRef = useRef(0);
   const sceneRef = useRef<SceneElement | null>(null);
   const tourFrameRef = useRef<number | null>(null);
   const tourStateRef = useRef<TourStopState | null>(null);
@@ -294,7 +296,14 @@ export function App(): JSX.Element {
   const syncTourProgress = (progress: number): void => {
     const normalizedProgress = Math.max(0, Math.min(1, progress));
 
-    setTourProgress(normalizedProgress);
+    if (Math.abs(lastTourProgressRef.current - normalizedProgress) < 0.0001) {
+      return;
+    }
+
+    lastTourProgressRef.current = normalizedProgress;
+    flushSync(() => {
+      setTourProgress(normalizedProgress);
+    });
   };
 
   const refreshLayerTargets = (scene: WebSceneLike | null | undefined): void => {

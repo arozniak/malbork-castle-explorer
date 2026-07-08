@@ -853,5 +853,11 @@ Set this up for me!
 That's the repo URL https://github.com/arozniak/malbork-castle-explorer
 ```
 
+## 2026-07-08 - Deployed tour timer live update bug
+
+```text
+It seems to work! However, I found a bug: when deployed, the timer around the play button doesn't work in real live. It loads only after pressing pause. It works correctly when running it locally. Could you investigate and fix that? 
+```
+
 
 
