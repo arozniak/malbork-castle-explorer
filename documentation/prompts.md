@@ -805,5 +805,35 @@ Bug: there is a scroll on the side of the map. Why is it there? It's definitely 
 I still see a scroll on the side of the screen
 ```
 
+## 2026-07-08 - Custom footnote wording request
+
+```text
+I would like to adjust page footnote. I would like to have it similar to the one in this example: https://ralucanicola.github.io/JSAPI_demos/sketch-the-city/?id=1b2d95f551d6423e9aa408b8f86e9c3d. Use the following text: "Malbork Castle Explorer" (on the bottom left), and "Malbork Castle open data provided by [GUGiK](https://www.gov.pl/web/gugik-en/data). Fully vibe coded with [ArcGIS Maps SDK for JavaScript](https://developers.arcgis.com/javascript/latest/) using GitHub Copilot." -> you can adjust the text if you think that's needed, but check this with me first to agree on the final version. Make sure that the colors fit the theme of the app.
+```
+
+## 2026-07-08 - Approve and implement custom footnote
+
+```text
+Use your version and implement it 
+```
+
+## 2026-07-08 - Footnote text-only replacement retry
+
+```text
+did you look at the example I gave you? Also, I want to replace the current footnote. Let's try for now to change the text but keep the styling the same for simplification. Please try again.
+```
+
+## 2026-07-08 - Footnote not updated on localhost follow-up
+
+```text
+I opened http://localhost:5173/ and don't see any changes to the footnote. can you please try again and make sure that you are making the right changes? 
+```
+
+## 2026-07-08 - Footnote left-right alignment request
+
+```text
+That's great and almost correct. There is just one change required: I would like the first part of the description: "Malbork Castle Explorer" to be aligned to the left side. and the other side "Malbork Castle open data..." to the right side. 
+```
+
 
 
