@@ -793,5 +793,17 @@ Important:
 make sure this prompt is added at the end of the prompts file 
 ```
 
+## 2026-07-08 - Unnecessary map scrollbar bug report
+
+```text
+Bug: there is a scroll on the side of the map. Why is it there? It's definitely not necessary 
+```
+
+## 2026-07-08 - Scrollbar still visible follow-up
+
+```text
+I still see a scroll on the side of the screen
+```
+
 
 

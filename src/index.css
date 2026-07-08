@@ -4,6 +4,7 @@ body {
   background-color: var(--calcite-ui-foreground-2);
   height: 100%;
   margin: 0;
+  overflow: hidden;
 }
 
 :root {
@@ -23,12 +24,14 @@ body {
 
 calcite-shell {
   height: 100%;
+  overflow: hidden;
   position: relative;
 }
 
 arcgis-scene {
   display: block;
   height: 100%;
+  overflow: hidden;
 }
 
 .scene-controls {
@@ -63,6 +66,7 @@ arcgis-scene {
 .scene-overlay {
   inset: 0;
   isolation: isolate;
+  overflow: hidden;
   pointer-events: none;
   position: absolute;
   z-index: 2;
