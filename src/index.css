@@ -6,6 +6,21 @@ body {
   margin: 0;
 }
 
+:root {
+  --ui-cream: #f2e7d8;
+  --ui-cream-strong: #f7ede0;
+  --ui-cream-deep: #e3c9a7;
+  --ui-ink: #2f261d;
+  --ui-ink-soft: rgb(250 244 236 / 88%);
+  --ui-ink-muted: rgb(250 244 236 / 72%);
+  --ui-dark-glass: rgb(21 17 14 / 54%);
+  --ui-dark-glass-strong: rgb(18 14 12 / 68%);
+  --ui-border-soft: rgb(255 244 231 / 16%);
+  --ui-border-cream: rgb(129 107 69 / 26%);
+  --ui-shadow-soft: 0 14px 30px rgb(12 8 5 / 14%);
+  --ui-shadow-strong: 0 22px 44px rgb(12 8 5 / 20%);
+}
+
 calcite-shell {
   height: 100%;
   position: relative;
@@ -19,16 +34,22 @@ arcgis-scene {
 .scene-controls {
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
-  left: 1rem;
+  gap: 0.55rem;
+  left: 1.15rem;
   pointer-events: none;
   position: absolute;
-  top: 1rem;
+  top: 1.15rem;
   z-index: 3;
 }
 
 .scene-controls > * {
   pointer-events: auto;
+}
+
+.scene-controls :is(arcgis-home, arcgis-zoom, arcgis-compass) {
+  border-radius: 999px;
+  filter: drop-shadow(0 2px 6px rgb(49 36 15 / 8%));
+  transition: filter 180ms ease;
 }
 
 .scene-controls.is-disabled {
@@ -81,7 +102,7 @@ arcgis-scene {
   align-items: center;
   display: flex;
   flex-direction: column;
-  gap: 0.55rem;
+  gap: 0.65rem;
   left: 50%;
   max-width: min(92vw, 72rem);
   pointer-events: none;
@@ -94,16 +115,17 @@ arcgis-scene {
 
 .slide-tab-rail {
   align-items: center;
-  background: rgb(28 22 18 / 48%);
-  border: 1px solid rgb(255 244 231 / 18%);
+  backdrop-filter: blur(12px);
+  background: linear-gradient(180deg, var(--ui-dark-glass), var(--ui-dark-glass-strong));
+  border: 1px solid var(--ui-border-soft);
   border-radius: 999px;
-  box-shadow: 0 20px 40px rgb(0 0 0 / 12%);
+  box-shadow: 0 18px 38px rgb(0 0 0 / 18%);
   display: flex;
   flex-wrap: nowrap;
-  gap: 0.2rem;
+  gap: 0.12rem;
   max-width: 100%;
   overflow-x: auto;
-  padding: 0.28rem;
+  padding: 0.24rem;
   pointer-events: auto;
   scrollbar-width: none;
 }
@@ -116,16 +138,20 @@ arcgis-scene {
   background: transparent;
   border: 0;
   border-radius: 999px;
-  color: rgb(251 244 236 / 90%);
+  color: var(--ui-ink-soft);
   cursor: pointer;
   font: inherit;
   font-size: 0.93rem;
+  font-weight: 500;
   letter-spacing: 0.01em;
   line-height: 1;
-  padding: 0.86rem 1.15rem;
+  min-height: 2.4rem;
+  padding: 0.78rem 1.08rem;
+  text-shadow: 0 1px 10px rgb(0 0 0 / 22%);
   white-space: nowrap;
   transition:
     background-color 180ms ease,
+    box-shadow 180ms ease,
     color 180ms ease,
     transform 180ms ease;
 }
@@ -133,15 +159,16 @@ arcgis-scene {
 .slide-tab:hover,
 .slide-tab:focus-visible {
   background: rgb(255 244 230 / 12%);
-  color: #fff7ef;
+  color: #fff9f1;
   outline: none;
   transform: translateY(-1px);
 }
 
 .slide-tab.is-active {
-  background: linear-gradient(180deg, rgb(251 235 215 / 96%), rgb(238 205 168 / 92%));
-  box-shadow: 0 8px 18px rgb(41 24 12 / 18%);
-  color: #362114;
+  background: linear-gradient(180deg, rgb(247 238 227 / 98%), rgb(230 212 186 / 94%));
+  box-shadow: 0 6px 14px rgb(41 24 12 / 16%);
+  color: var(--ui-ink);
+  text-shadow: none;
 }
 
 .slide-text {
@@ -151,6 +178,7 @@ arcgis-scene {
   pointer-events: auto;
   position: static;
   text-align: center;
+  text-shadow: 0 8px 24px rgb(0 0 0 / 32%);
   width: min(40rem, 68vw);
 }
 
@@ -192,7 +220,7 @@ arcgis-scene {
 .slide-text-toggle {
   background: transparent;
   border: 0;
-  color: #ffe6c8;
+  color: #f1dcc1;
   cursor: pointer;
   font: inherit;
   font-weight: 600;
@@ -203,7 +231,7 @@ arcgis-scene {
 
 .slide-text-toggle:hover,
 .slide-text-toggle:focus-visible {
-  color: #fff1de;
+  color: #fff5e9;
   outline: none;
 }
 
@@ -221,26 +249,26 @@ arcgis-scene {
 }
 
 .layer-switch {
-  bottom: 2.4rem;
   pointer-events: none;
   position: absolute;
-  right: 1.6rem;
+  right: 1.15rem;
+  top: 1.15rem;
   z-index: 2;
 }
 
 .layer-switch-button {
   align-items: center;
-  backdrop-filter: blur(12px);
-  background: linear-gradient(180deg, rgb(28 23 19 / 66%), rgb(17 14 11 / 58%));
-  border: 1px solid rgb(255 248 239 / 22%);
+  backdrop-filter: blur(8px);
+  background: rgb(244 239 227 / 92%);
+  border: 1px solid rgb(111 95 58 / 28%);
   border-radius: 999px;
-  box-shadow: 0 12px 28px rgb(8 6 4 / 16%);
+  box-shadow: 0 2px 8px rgb(62 46 19 / 12%);
   cursor: pointer;
-  color: rgb(255 250 245 / 94%);
+  color: #5d4f31;
   display: inline-flex;
-  gap: 0.42rem;
-  min-height: 2rem;
-  padding: 0.34rem 0.72rem;
+  gap: 0.36rem;
+  min-height: 2.2rem;
+  padding: 0.28rem 0.68rem 0.28rem 0.34rem;
   pointer-events: auto;
   transition:
     transform 180ms ease,
@@ -252,9 +280,10 @@ arcgis-scene {
 
 .layer-switch-button:hover,
 .layer-switch-button:focus-visible {
-  background: linear-gradient(180deg, rgb(36 30 25 / 74%), rgb(21 17 14 / 66%));
-  border-color: rgb(255 248 239 / 32%);
-  color: #ffffff;
+  background: rgb(249 245 235 / 98%);
+  border-color: rgb(111 95 58 / 42%);
+  box-shadow: 0 3px 10px rgb(62 46 19 / 15%);
+  color: #4f4329;
   outline: none;
   transform: translateY(-1px);
 }
@@ -266,54 +295,54 @@ arcgis-scene {
 }
 
 .layer-switch-icon {
-  background: rgb(255 255 255 / 6%);
-  border: 1px solid rgb(255 248 239 / 16%);
+  background: rgb(255 251 244 / 88%);
+  border: 1px solid rgb(111 95 58 / 22%);
   border-radius: 999px;
-  box-shadow: inset 0 1px 0 rgb(255 255 255 / 12%);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 45%);
   flex: 0 0 auto;
-  height: 1rem;
+  height: 1.34rem;
   position: relative;
-  width: 1rem;
+  width: 1.34rem;
 }
 
 .layer-switch-icon::before,
 .layer-switch-icon::after {
-  border: 1px solid rgb(255 248 239 / 28%);
-  border-radius: 0.14rem;
+  border: 1px solid rgb(111 95 58 / 28%);
+  border-radius: 0.12rem;
   content: "";
-  height: 0.22rem;
+  height: 0.26rem;
   position: absolute;
-  width: 0.3rem;
+  width: 0.34rem;
 }
 
 .layer-switch-icon::before {
-  background: rgb(255 255 255 / 26%);
-  left: 0.2rem;
-  top: 0.24rem;
+  background: rgb(204 189 160 / 72%);
+  left: 0.26rem;
+  top: 0.32rem;
 }
 
 .layer-switch-icon::after {
-  background: rgb(255 255 255 / 18%);
-  left: 0.38rem;
-  top: 0.42rem;
+  background: rgb(181 163 130 / 64%);
+  left: 0.52rem;
+  top: 0.54rem;
 }
 
 .layer-switch-label {
   font-size: 0.78rem;
-  font-weight: 600;
+  font-weight: 500;
   letter-spacing: 0.01em;
   line-height: 1;
-  text-shadow: 0 1px 8px rgb(0 0 0 / 28%);
+  text-shadow: none;
 }
 
 .tour-toggle {
   align-items: center;
   backdrop-filter: blur(14px);
-  background: linear-gradient(180deg, rgb(252 240 224 / 94%), rgb(233 205 170 / 92%));
-  border: 1px solid rgb(255 248 239 / 58%);
+  background: linear-gradient(180deg, rgb(246 238 227 / 94%), rgb(229 214 193 / 92%));
+  border: 1px solid rgb(127 106 70 / 26%);
   border-radius: 999px;
-  box-shadow: 0 22px 45px rgb(12 7 3 / 22%);
-  color: #362114;
+  box-shadow: var(--ui-shadow-soft);
+  color: var(--ui-ink);
   cursor: pointer;
   display: inline-flex;
   height: 4.75rem;
@@ -329,7 +358,8 @@ arcgis-scene {
 
 .tour-toggle:hover,
 .tour-toggle:focus-visible {
-  box-shadow: 0 26px 55px rgb(12 7 3 / 28%);
+  background: linear-gradient(180deg, rgb(250 244 236 / 96%), rgb(234 220 201 / 94%));
+  box-shadow: var(--ui-shadow-strong);
   outline: none;
   transform: translateY(-1px);
 }
@@ -355,11 +385,11 @@ arcgis-scene {
 }
 
 .tour-progress-track {
-  stroke: rgb(70 44 24 / 16%);
+  stroke: rgb(70 44 24 / 14%);
 }
 
 .tour-progress-value {
-  stroke: #6e4726;
+  stroke: #725234;
   stroke-linecap: round;
   transition: stroke-dashoffset 120ms linear;
 }
@@ -405,21 +435,24 @@ arcgis-scene {
 }
 
 .scene-status {
-  background: rgb(33 32 30 / 78%);
+  backdrop-filter: blur(10px);
+  background: rgb(27 22 18 / 72%);
+  border: 1px solid rgb(255 244 231 / 12%);
   border-radius: 999px;
   bottom: 1rem;
-  color: var(--calcite-color-text-1);
+  color: var(--ui-ink-soft);
   left: 1rem;
   padding: 0.5rem 0.875rem;
   pointer-events: none;
   position: absolute;
+  box-shadow: 0 10px 24px rgb(0 0 0 / 14%);
   z-index: 1;
 }
 
 @media (max-width: 720px) {
   .scene-controls {
-    left: 0.75rem;
-    top: 0.75rem;
+    left: 0.8rem;
+    top: 0.8rem;
   }
 
   .slide-ui-stack {
@@ -456,8 +489,8 @@ arcgis-scene {
   }
 
   .layer-switch {
-    bottom: 1.6rem;
-    right: 0.75rem;
+    right: 0.8rem;
+    top: 0.8rem;
   }
 
   .layer-switch-button {

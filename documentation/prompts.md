@@ -682,3 +682,116 @@ okay, that bug was fixed, but you  introduced another one. now the progress bar 
 ```text
 bug 3: please remove the "loading web scene" from the left bottom of the screen
 ```
+
+## 2026-07-07 - Visual design consistency review request
+
+```text
+Act as a senior product designer.
+
+Review the application's visual design consistency. Focus on colors, typography, spacing, alignment, component styling, and visual hierarchy.
+
+Preserve the current minimalistic and immersive design direction.
+
+Do not make any changes. Instead, create a report in /documentation describing:
+- inconsistencies
+- usability concerns
+- design debt
+- recommended improvements
+- priority (High / Medium / Low)
+```
+
+## 2026-07-07 - Desktop-only review scope correction
+
+```text
+For now, make sure that the experience work on different sizes of desktop app, but dont look at mobile experiences.
+```
+
+## 2026-07-07 - Zurich controls styling request
+
+```text
+okay, so, I don't like the look of the UI elements as much. can you have a look at map controllers buttons in this app: https://ralucanicola.github.io/JSAPI_demos/zurich-hills/, and make the buttons in my app similar style wise?
+```
+
+## 2026-07-07 - Layer toggle style consistency follow-up
+
+```text
+okay, you are supposed to be inspired by the style, but they don't need to be implemented exactly the same way. and yes, 1. Apply the same Zurich-style restraint to the bottom-right layer toggle so the UI feels more consistent.
+```
+
+## 2026-07-07 - Top-left white background bug report
+
+```text
+no, test it. there is basically a white backgrounb behind the buttons, it's a bug
+```
+
+## 2026-07-07 - Top-left hover behavior follow-up
+
+```text
+almost. the behavior on hover is still wrong. they should behave the same on hover as the gaussian splat layer switch
+```
+
+## 2026-07-07 - Zoom hover and blue selection bug report
+
+```text
+I still see two issues. First is that the minus and plus buttons move on hover together. second is that after click of any of the top left map controler they get selected and underlined in blue
+```
+
+## 2026-07-07 - Retry and black hover regression report
+
+```text
+you didnt really fix it. can you try again? and also now they get black again on hover
+```
+
+## 2026-07-07 - Visual consistency refinement request
+
+```text
+Review the visual design and improve consistency across the UI.
+
+Use the ArcGIS Map controls in the top-left corner as inspiration for the color palette, materials, borders, shadows, and overall design language, but do not make all components identical.
+
+Design goals:
+- Minimalistic.
+- Elegant.
+- Consistent.
+- Preserve the storytelling experience.
+- Preserve the current layout and functionality.
+
+Navigation tabs:
+- Keep the dark navigation container.
+- Maintain strong contrast between selected and non-selected tabs.
+- Selected tab should use a cream/light background.
+- Non-selected tabs should remain dark with light text.
+- Improve visual consistency with the map controls while preserving the current navigation hierarchy.
+- Ensure readability and contrast over any scene background.
+
+Layer switch control:
+- Do not change the control design itself.
+- Evaluate whether moving it to the top-right corner at the same height as the Home button would improve balance and consistency.
+- If moved, maintain existing behavior and functionality.
+- Keep the control visually secondary to the navigation tabs.
+
+Play button:
+- Keep the current design and interaction.
+- Adjust colors, borders, shadows, or materials if necessary to better match the overall UI style.
+- Do not redesign the button.
+
+Read More button:
+- Keep the existing styling.
+- You may adjust the color to better fit the final palette.
+
+Color palette:
+- Use a warm cream/off-white tone as the primary accent color.
+- Ensure all UI elements feel part of the same design system.
+- Avoid pure white when cream creates a softer and more premium appearance.
+
+Important:
+- Do not modify functionality.
+- Do not change component behavior.
+- Do not change layout structure unless specifically mentioned.
+- Focus only on visual refinement and consistency.
+
+make sure this prompt is added at the end of the prompts file 
+```
+
+
+

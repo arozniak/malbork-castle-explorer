@@ -31,6 +31,165 @@ import "@esri/calcite-components/components/calcite-shell";
 
 const MALBORK_WEB_SCENE_ID = "a032056172494a81a2105ef9232ea9a9";
 const SCENE_ELEMENT_ID = "malbork-scene";
+const MAP_CONTROL_ICON_STYLE_ATTRIBUTE = "data-malbork-map-control-icon-style";
+const MAP_CONTROL_BUTTON_STYLE_ATTRIBUTE = "data-malbork-map-control-button-style";
+const MAP_CONTROL_STYLE_ATTRIBUTE = "data-malbork-map-control-style";
+const MAP_CONTROL_ICON_SHADOW_CSS = `
+  :host {
+    color: inherit;
+  }
+
+  svg {
+    fill: currentColor;
+  }
+`;
+const MAP_CONTROL_BUTTON_SHADOW_CSS = `
+  button {
+    align-items: center;
+    -webkit-tap-highlight-color: transparent;
+    background-color: rgb(244 239 227 / 96%) !important;
+    block-size: 2.55rem;
+    border-color: rgb(111 95 58 / 38%) !important;
+    box-shadow: 0 1px 4px rgb(62 46 19 / 10%) !important;
+    color: #6a5931 !important;
+    inline-size: 2.55rem;
+    justify-content: center;
+    min-block-size: 2.55rem;
+    min-inline-size: 2.55rem;
+    outline: none;
+    padding: 0;
+    text-decoration: none;
+    transition:
+      transform 180ms ease,
+      background-color 180ms ease,
+      border-color 180ms ease,
+      box-shadow 180ms ease,
+      color 180ms ease;
+  }
+
+  :host(:hover) button,
+  :host(:focus-visible) button,
+  :host(:focus-within) button,
+  button:hover,
+  button:focus-visible {
+    background-color: rgb(249 245 235 / 98%) !important;
+    border-color: rgb(111 95 58 / 42%) !important;
+    box-shadow: 0 3px 10px rgb(62 46 19 / 15%) !important;
+    color: #4f4329 !important;
+    transform: translateY(-1px);
+  }
+
+  button:focus,
+  button:focus-visible,
+  button:active {
+    outline: none;
+    text-decoration: none;
+  }
+
+  .icon {
+    color: inherit !important;
+    margin: 0;
+  }
+
+  calcite-icon,
+  .icon-container {
+    block-size: 1.05rem;
+    color: inherit !important;
+    fill: currentColor !important;
+    inline-size: 1.05rem;
+  }
+`;
+const MAP_CONTROL_SHADOW_CSS = `
+  :host {
+    display: block;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .arcgis-button,
+  .root.arcgis-button {
+    background: transparent;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  calcite-button {
+    --calcite-button-corner-radius: 999px;
+    block-size: 2.55rem;
+    inline-size: 2.55rem;
+  }
+`;
+
+const applyMapControlIconStyle = (iconElement: Element): void => {
+  const shadowRoot = iconElement.shadowRoot;
+
+  if (!shadowRoot || shadowRoot.querySelector(`style[${MAP_CONTROL_ICON_STYLE_ATTRIBUTE}]`)) {
+    return;
+  }
+
+  const styleElement = document.createElement("style");
+
+  styleElement.setAttribute(MAP_CONTROL_ICON_STYLE_ATTRIBUTE, "true");
+  styleElement.textContent = MAP_CONTROL_ICON_SHADOW_CSS;
+  shadowRoot.append(styleElement);
+};
+
+const applyMapControlButtonStyle = (buttonElement: Element): void => {
+  const shadowRoot = buttonElement.shadowRoot;
+
+  if (!shadowRoot || shadowRoot.querySelector(`style[${MAP_CONTROL_BUTTON_STYLE_ATTRIBUTE}]`)) {
+    return;
+  }
+
+  const styleElement = document.createElement("style");
+
+  styleElement.setAttribute(MAP_CONTROL_BUTTON_STYLE_ATTRIBUTE, "true");
+  styleElement.textContent = MAP_CONTROL_BUTTON_SHADOW_CSS;
+  shadowRoot.append(styleElement);
+  shadowRoot.querySelectorAll("calcite-icon").forEach((iconElement) => {
+    applyMapControlIconStyle(iconElement);
+  });
+
+  const nativeButton = shadowRoot.querySelector<HTMLButtonElement>("button");
+
+  if (nativeButton && nativeButton.dataset.malborkBlurOnPointerUp !== "true") {
+    nativeButton.dataset.malborkBlurOnPointerUp = "true";
+    nativeButton.addEventListener("pointerup", () => {
+      nativeButton.blur();
+      if (buttonElement instanceof HTMLElement) {
+        buttonElement.blur();
+      }
+    });
+  }
+};
+
+const applyMapControlStyle = (element: HTMLElement | null): boolean => {
+  const shadowRoot = element?.shadowRoot;
+
+  if (!shadowRoot) {
+    return false;
+  }
+
+  const existingStyle = shadowRoot.querySelector(`style[${MAP_CONTROL_STYLE_ATTRIBUTE}]`);
+
+  if (existingStyle) {
+    return true;
+  }
+
+  const styleElement = document.createElement("style");
+
+  styleElement.setAttribute(MAP_CONTROL_STYLE_ATTRIBUTE, "true");
+  styleElement.textContent = MAP_CONTROL_SHADOW_CSS;
+  shadowRoot.append(styleElement);
+  shadowRoot.querySelectorAll<HTMLElement>(".arcgis-button, .root.arcgis-button").forEach((wrapperElement) => {
+    wrapperElement.style.background = "transparent";
+  });
+  shadowRoot.querySelectorAll("calcite-button").forEach((buttonElement) => {
+    applyMapControlButtonStyle(buttonElement);
+  });
+
+  return true;
+};
 
 export function App(): JSX.Element {
   const layerModeRef = useRef<LayerMode>("mesh");
@@ -99,6 +258,31 @@ export function App(): JSX.Element {
     setIsTourPlaying(false);
     syncTourProgress(0);
   };
+
+  useEffect(() => {
+    let frameId: number | null = null;
+
+    const styleControls = (): void => {
+      const controlElements = [
+        document.querySelector(".scene-controls arcgis-home"),
+        document.querySelector(".scene-controls arcgis-zoom"),
+        document.querySelector(".scene-controls arcgis-compass"),
+      ] as Array<HTMLElement | null>;
+      const hasPendingControl = controlElements.some((controlElement) => !applyMapControlStyle(controlElement));
+
+      if (hasPendingControl) {
+        frameId = requestAnimationFrame(styleControls);
+      }
+    };
+
+    styleControls();
+
+    return () => {
+      if (frameId !== null) {
+        cancelAnimationFrame(frameId);
+      }
+    };
+  }, []);
 
   useEffect(() => {
     const sceneElement = sceneRef.current;
@@ -438,9 +622,9 @@ export function App(): JSX.Element {
         className={`scene-controls${isTextExpanded ? " is-disabled" : ""}`}
         inert={isTextExpanded ? true : undefined}
       >
-        <arcgis-home referenceElement={SCENE_ELEMENT_ID} />
-        <arcgis-zoom referenceElement={SCENE_ELEMENT_ID} />
-        <arcgis-compass referenceElement={SCENE_ELEMENT_ID} />
+        <arcgis-home referenceElement={SCENE_ELEMENT_ID} visualScale="s" />
+        <arcgis-zoom referenceElement={SCENE_ELEMENT_ID} visualScale="s" />
+        <arcgis-compass referenceElement={SCENE_ELEMENT_ID} visualScale="s" />
       </div>
       {sceneReady && slides.length > 0 ? (
         <SceneOverlay
