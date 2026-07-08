@@ -835,5 +835,23 @@ I opened http://localhost:5173/ and don't see any changes to the footnote. can y
 That's great and almost correct. There is just one change required: I would like the first part of the description: "Malbork Castle Explorer" to be aligned to the left side. and the other side "Malbork Castle open data..." to the right side. 
 ```
 
+## 2026-07-08 - GitHub Pages deployment question
+
+```text
+I would like to deploy this app using github pages. How do I do this? 
+```
+
+## 2026-07-08 - Set up GitHub Pages deployment
+
+```text
+Set this up for me!
+```
+
+## 2026-07-08 - Confirm GitHub repository URL
+
+```text
+That's the repo URL https://github.com/arozniak/malbork-castle-explorer
+```
+
 
 
