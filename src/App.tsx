@@ -25,7 +25,6 @@ import {
 } from "./tour-motion";
 
 import "@arcgis/map-components/components/arcgis-compass";
-import "@arcgis/map-components/components/arcgis-home";
 import "@arcgis/map-components/components/arcgis-scene";
 import "@arcgis/map-components/components/arcgis-zoom";
 import "@esri/calcite-components/components/calcite-shell";
@@ -343,7 +342,6 @@ export function App(): JSX.Element {
     const styleControls = (): void => {
       const sceneElement = document.querySelector("arcgis-scene") as HTMLElement | null;
       const controlElements = [
-        document.querySelector(".scene-controls arcgis-home"),
         document.querySelector(".scene-controls arcgis-zoom"),
         document.querySelector(".scene-controls arcgis-compass"),
       ] as Array<HTMLElement | null>;
@@ -716,7 +714,6 @@ export function App(): JSX.Element {
         className={`scene-controls${isTextExpanded ? " is-disabled" : ""}`}
         inert={isTextExpanded ? true : undefined}
       >
-        <arcgis-home referenceElement={SCENE_ELEMENT_ID} visualScale="s" />
         <arcgis-zoom referenceElement={SCENE_ELEMENT_ID} visualScale="s" />
         <arcgis-compass referenceElement={SCENE_ELEMENT_ID} visualScale="s" />
       </div>
