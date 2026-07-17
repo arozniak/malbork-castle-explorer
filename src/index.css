@@ -92,6 +92,137 @@ arcgis-scene {
   z-index: 0;
 }
 
+.scene-info-panel {
+  align-items: flex-end;
+  display: flex;
+  flex-direction: column;
+  pointer-events: none;
+  position: absolute;
+  right: 1.15rem;
+  top: 1.15rem;
+  z-index: 3;
+}
+
+.scene-info-button {
+  align-items: center;
+  backdrop-filter: blur(10px);
+  background: rgb(244 239 227 / 84%);
+  border: 1px solid rgb(111 95 58 / 22%);
+  border-radius: 999px;
+  box-shadow: 0 2px 8px rgb(62 46 19 / 9%);
+  color: rgb(93 79 49 / 88%);
+  cursor: pointer;
+  display: inline-flex;
+  justify-content: center;
+  pointer-events: auto;
+  transition:
+    transform 180ms ease,
+    background-color 180ms ease,
+    border-color 180ms ease,
+    box-shadow 180ms ease,
+    color 180ms ease;
+}
+
+.scene-info-button {
+  height: 2.24rem;
+  padding: 0;
+  width: 2.24rem;
+}
+
+.scene-info-button:hover,
+.scene-about-close:focus-visible {
+  border-color: rgb(111 95 58 / 22%);
+  box-shadow: 0 2px 8px rgb(62 46 19 / 9%);
+  color: rgb(93 79 49 / 88%);
+  outline: none;
+  transform: translateY(-1px);
+}
+
+.scene-info-button:focus-visible {
+  outline: none;
+  transform: translateY(-1px);
+}
+
+.scene-info-button.is-open {
+  background: linear-gradient(180deg, rgb(243 234 222 / 94%), rgb(225 207 181 / 90%));
+  color: rgb(47 38 29 / 92%);
+}
+
+.scene-info-button-glyph {
+  font-size: 0.86rem;
+  font-style: italic;
+  font-weight: 700;
+  line-height: 1;
+  transform: translateY(-0.03rem);
+}
+
+.scene-about-popup {
+  backdrop-filter: blur(16px);
+  background: linear-gradient(180deg, rgb(19 15 12 / 84%), rgb(19 15 12 / 76%));
+  border: 1px solid rgb(255 244 231 / 16%);
+  border-radius: 1.1rem;
+  box-shadow: 0 24px 48px rgb(0 0 0 / 24%);
+  color: #fff8f0;
+  margin-top: 0.55rem;
+  max-width: min(26rem, calc(100vw - 2.3rem));
+  padding: 1rem 1rem 1.05rem;
+  pointer-events: auto;
+  width: min(26rem, calc(100vw - 2.3rem));
+}
+
+.scene-about-popup-header {
+  align-items: center;
+  display: flex;
+}
+
+.scene-about-title,
+.scene-about-section-title {
+  margin: 0;
+}
+
+.scene-about-title {
+  color: var(--ui-cream-strong);
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+}
+
+.scene-about-section {
+  margin-top: 0.95rem;
+}
+
+.scene-about-section-title {
+  color: var(--ui-cream-strong);
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
+.scene-about-copy,
+.scene-about-link {
+  font-size: 0.92rem;
+  line-height: 1.6;
+}
+
+.scene-about-copy {
+  color: var(--ui-ink-soft);
+  margin: 0.4rem 0 0;
+}
+
+.scene-about-link {
+  color: var(--ui-cream-deep);
+  text-decoration-color: rgb(227 201 167 / 54%);
+  text-underline-offset: 0.14em;
+}
+
+.scene-about-link:hover,
+.scene-about-link:focus-visible {
+  color: #fff5e9;
+  outline: none;
+  text-decoration-color: currentColor;
+}
+
 .scene-text-veil {
   backdrop-filter: blur(12px);
   background:
@@ -370,6 +501,16 @@ arcgis-scene {
   .scene-controls {
     left: 0.8rem;
     top: 0.8rem;
+  }
+
+  .scene-info-panel {
+    right: 0.8rem;
+    top: 0.8rem;
+  }
+
+  .scene-about-popup {
+    max-width: min(25rem, calc(100vw - 1.6rem));
+    width: min(25rem, calc(100vw - 1.6rem));
   }
 
   .slide-ui-stack {

@@ -685,3 +685,40 @@ I would like to make one more pass throught the app and correct some things that
 
 We did some reviews and decided for a few changes. First, we no longer want to support the mesh/gaussian layer switch. Instead, we want to support only the mesh layer. Please remove all related bits from the code (do a removal and cleanup), and also correct the app specification/description files so that they are up to date.
 
+## Restore original attribution and discuss info button placement
+
+The next change is to bring back the original attribution at the bottom of the scene. Redo the changes we did to the attribution at the bottom of the map. Instead, we should have an info button somewhere in the app, maybe in the top right corner. What do you think about this placement?
+
+## Add top-right info button with about popup
+
+I would like to add a minimal top-right info button that opens a minimal popup with information about:
+
+### About
+
+**Code repository**
+
+[Malbork Castle Explorer on GitHub](https://github.com/arozniak/malbork-castle-explorer)
+
+**Data**
+
+Malbork Castle 3D mesh based on [aerial imagery published by the Polish Head Office of Geodesy and Cartography (GUGiK)](https://www.gov.pl/web/gugik/dane-ukosne-i-modele-siatkowe-3d-mesh-dla-malborka-dostepne-w-pzgik). The source data are available under the Polish Act on Open Data and Re-use of Public Sector Information and were processed using ArcGIS Reality Studio.
+
+**Acknowledgements**
+
+This application was vibe coded with Microsoft Copilot by Agnieszka Rozniak as part of work carried out at Esri R&D Center Zurich.
+
+## Refine info popup copy and button behavior
+
+Looking overall okay. Change the content of the acknowledgements to: 
+The source imagery was processed into a 3D mesh by **Ashleigh Sier (Esri)** using ArcGIS Reality Studio. This application was vibe coded with Microsoft Copilot by **Agnieszka Rozniak** as part of work carried out at **Esri R&D Center Zurich**.
+
+I noticed a few issues: 1) do not change the location of the icon when the pop up is open. The icon should remain in its initial location. 2) Make the icon a bit smaller and less contrasting with the rest of the app. 3) The ideal interaction would be: the user clicks the button, it is "selected" and the popup is open. If the user clicks on the icon again, it gets deselected and closes.
+
+## Remove popup close button and hover color change
+
+Almost there. FIrst, you can remove the close button. Secondly, remove the change of button color on hover, I think it creates a slightly weird effect.
+
+## Rewrite source data sentence in info popup
+
+okay, rewrite it slightly: The source data are available under the Polish Act on Open Data and Re-use of Public Sector Information and were processed using ArcGIS Reality Studio. --> The source data is available under the Polish Act on Open Data and Re-use of Public Sector Information. The imagery was processed using ArcGIS Reality Studio.
+

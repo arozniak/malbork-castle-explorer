@@ -28,40 +28,9 @@ import "@esri/calcite-components/components/calcite-shell";
 
 const MALBORK_WEB_SCENE_ID = "a032056172494a81a2105ef9232ea9a9";
 const SCENE_ELEMENT_ID = "malbork-scene";
-const SCENE_ATTRIBUTION_STYLE_ATTRIBUTE = "data-malbork-scene-attribution-style";
 const MAP_CONTROL_ICON_STYLE_ATTRIBUTE = "data-malbork-map-control-icon-style";
 const MAP_CONTROL_BUTTON_STYLE_ATTRIBUTE = "data-malbork-map-control-button-style";
 const MAP_CONTROL_STYLE_ATTRIBUTE = "data-malbork-map-control-style";
-const SCENE_ATTRIBUTION_HTML = `
-  <span class="malbork-attribution-left">Malbork Castle Explorer</span>
-  <span class="malbork-attribution-right">
-    Malbork Castle open data by
-    <a href="https://www.gov.pl/web/gugik-en/data" rel="noreferrer" target="_blank">GUGiK</a>.
-    Built with
-    <a href="https://developers.arcgis.com/javascript/latest/" rel="noreferrer" target="_blank">ArcGIS Maps SDK for JavaScript</a>
-    and GitHub Copilot.
-  </span>
-`;
-const SCENE_ATTRIBUTION_SHADOW_CSS = `
-  .esri-attribution__sources[data-malbork-attribution-content="true"] {
-    align-items: center;
-    display: flex;
-    gap: 1rem;
-    justify-content: space-between;
-    width: 100%;
-  }
-
-  .esri-attribution__sources[data-malbork-attribution-content="true"] .malbork-attribution-left {
-    flex: 0 0 auto;
-    text-align: left;
-    white-space: nowrap;
-  }
-
-  .esri-attribution__sources[data-malbork-attribution-content="true"] .malbork-attribution-right {
-    flex: 1 1 auto;
-    text-align: right;
-  }
-`;
 const MAP_CONTROL_ICON_SHADOW_CSS = `
   :host {
     color: inherit;
@@ -219,44 +188,8 @@ const applyMapControlStyle = (element: HTMLElement | null): boolean => {
   return true;
 };
 
-const applySceneAttributionContent = (element: HTMLElement | null): boolean => {
-  const shadowRoot = element?.shadowRoot;
-
-  if (!shadowRoot) {
-    return false;
-  }
-
-  const sourcesElement = shadowRoot.querySelector<HTMLElement>(".esri-attribution__sources");
-  const poweredByElement = shadowRoot.querySelector<HTMLElement>(".esri-attribution__powered-by");
-
-  if (!sourcesElement) {
-    return false;
-  }
-
-  if (!shadowRoot.querySelector(`style[${SCENE_ATTRIBUTION_STYLE_ATTRIBUTE}]`)) {
-    const styleElement = document.createElement("style");
-
-    styleElement.setAttribute(SCENE_ATTRIBUTION_STYLE_ATTRIBUTE, "true");
-    styleElement.textContent = SCENE_ATTRIBUTION_SHADOW_CSS;
-    shadowRoot.append(styleElement);
-  }
-
-  const currentText = sourcesElement.textContent?.replace(/\s+/g, " ").trim() ?? "";
-  const hasExpectedText = currentText.includes("Malbork Castle Explorer") && currentText.includes("GitHub Copilot");
-
-  if (!hasExpectedText) {
-    sourcesElement.innerHTML = SCENE_ATTRIBUTION_HTML;
-    sourcesElement.dataset.malborkAttributionContent = "true";
-  }
-
-  if (poweredByElement) {
-    poweredByElement.hidden = true;
-  }
-
-  return Boolean(hasExpectedText && (!poweredByElement || poweredByElement.hidden));
-};
-
 export function App(): JSX.Element {
+  const [isInfoOpen, setIsInfoOpen] = useState(false);
   const lastTourProgressRef = useRef(0);
   const sceneRef = useRef<SceneElement | null>(null);
   const tourFrameRef = useRef<number | null>(null);
@@ -308,30 +241,15 @@ export function App(): JSX.Element {
 
   useEffect(() => {
     let frameId: number | null = null;
-    let attributionObserver: MutationObserver | null = null;
 
     const styleControls = (): void => {
-      const sceneElement = document.querySelector("arcgis-scene") as HTMLElement | null;
       const controlElements = [
         document.querySelector(".scene-controls arcgis-zoom"),
         document.querySelector(".scene-controls arcgis-compass"),
       ] as Array<HTMLElement | null>;
       const hasPendingControl = controlElements.some((controlElement) => !applyMapControlStyle(controlElement));
-      const hasPendingSceneStyle = !applySceneAttributionContent(sceneElement);
 
-      if (sceneElement?.shadowRoot && !attributionObserver) {
-        attributionObserver = new MutationObserver(() => {
-          applySceneAttributionContent(sceneElement);
-        });
-
-        attributionObserver.observe(sceneElement.shadowRoot, {
-          characterData: true,
-          childList: true,
-          subtree: true,
-        });
-      }
-
-      if (hasPendingControl || hasPendingSceneStyle) {
+      if (hasPendingControl) {
         frameId = requestAnimationFrame(styleControls);
       }
     };
@@ -342,8 +260,6 @@ export function App(): JSX.Element {
       if (frameId !== null) {
         cancelAnimationFrame(frameId);
       }
-
-      attributionObserver?.disconnect();
     };
   }, []);
 
@@ -466,6 +382,24 @@ export function App(): JSX.Element {
 
     pauseTour();
   }, [isTextExpanded]);
+
+  useEffect(() => {
+    if (!isInfoOpen) {
+      return;
+    }
+
+    const handleEscape = (event: KeyboardEvent): void => {
+      if (event.key === "Escape") {
+        setIsInfoOpen(false);
+      }
+    };
+
+    window.addEventListener("keydown", handleEscape);
+
+    return () => {
+      window.removeEventListener("keydown", handleEscape);
+    };
+  }, [isInfoOpen]);
 
   useEffect(() => {
     if (!isTourPlaying) {
@@ -671,8 +605,10 @@ export function App(): JSX.Element {
           activeSlideId={activeSlideId}
           currentSlide={currentSlide}
           introParagraph={introParagraph}
+          isInfoOpen={isInfoOpen}
           isTextExpanded={isTextExpanded}
           isTourPlaying={isTourPlaying}
+          onInfoOpenChange={setIsInfoOpen}
           onSlideSelect={handleSlideSelect}
           onTextExpandedChange={setIsTextExpanded}
           onTourToggle={handleTourToggle}
