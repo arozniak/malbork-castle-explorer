@@ -722,3 +722,38 @@ Almost there. FIrst, you can remove the close button. Secondly, remove the chang
 
 okay, rewrite it slightly: The source data are available under the Polish Act on Open Data and Re-use of Public Sector Information and were processed using ArcGIS Reality Studio. --> The source data is available under the Polish Act on Open Data and Re-use of Public Sector Information. The imagery was processed using ArcGIS Reality Studio.
 
+## Add onboarding popup request
+
+Add a minimal onboarding popup that appears when the application loads. For now, show it on every page refresh so the feature can be tested easily. We can add localStorage persistence later.
+
+Display the popup centered over the app and disable interaction with the application while it is visible.
+
+Include three navigation tips with simple animated illustrations:
+
+- Pan — Left-click + drag
+- Zoom — Scroll wheel or wheel drag
+- Rotate — Right-click + drag
+
+Use animated mouse-control illustrations instead of static icons.
+
+For the drag interactions (Pan and Rotate), use the same drag animation style as in the Bagan example https://artsexperiments.withgoogle.com/bagan/. Replicate the visual behavior and motion pattern as closely as possible. The animation should clearly communicate the gesture and feel instructional rather than decorative.
+
+For Zoom, animate the mouse wheel to clearly indicate zooming.
+
+Keep the popup compact, lightweight, and consistent with the application's minimalist design. Avoid welcome messages, paragraphs of text, tutorials, large modal dialogs, and unnecessary UI elements.
+
+Include only:
+- Title: "How to Navigate"
+- The three animated illustrations with their labels
+- An "OK" button to close the popup
+
+Use subtle, smooth animations and a clean visual style that matches the rest of the application.
+
+## Onboarding animation refinement request
+
+Okay, not bad. But remove the circle from the horizontal line when showing drag movements. Also remove the lines moving below the mouse on "zoom" movement.
+
+## First-visit onboarding and prompt order request
+
+Almost perfect. Make the text a bit bigger. Also, make sure that the prompts are added to the prompt file in the right order. Show it only for the first time when the user opens the app, not on every refresh
+

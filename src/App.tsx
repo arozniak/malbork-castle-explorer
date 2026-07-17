@@ -20,6 +20,7 @@ import {
   getTourMotionConfig,
   type TourStopState,
 } from "./tour-motion";
+import { NavigationOnboarding } from "./navigation-onboarding";
 
 import "@arcgis/map-components/components/arcgis-compass";
 import "@arcgis/map-components/components/arcgis-scene";
@@ -27,6 +28,7 @@ import "@arcgis/map-components/components/arcgis-zoom";
 import "@esri/calcite-components/components/calcite-shell";
 
 const MALBORK_WEB_SCENE_ID = "a032056172494a81a2105ef9232ea9a9";
+const NAVIGATION_ONBOARDING_STORAGE_KEY = "malbork-navigation-onboarding-dismissed";
 const SCENE_ELEMENT_ID = "malbork-scene";
 const MAP_CONTROL_ICON_STYLE_ATTRIBUTE = "data-malbork-map-control-icon-style";
 const MAP_CONTROL_BUTTON_STYLE_ATTRIBUTE = "data-malbork-map-control-button-style";
@@ -190,6 +192,13 @@ const applyMapControlStyle = (element: HTMLElement | null): boolean => {
 
 export function App(): JSX.Element {
   const [isInfoOpen, setIsInfoOpen] = useState(false);
+  const [isOnboardingOpen, setIsOnboardingOpen] = useState(() => {
+    if (typeof window === "undefined") {
+      return false;
+    }
+
+    return window.localStorage.getItem(NAVIGATION_ONBOARDING_STORAGE_KEY) !== "true";
+  });
   const lastTourProgressRef = useRef(0);
   const sceneRef = useRef<SceneElement | null>(null);
   const tourFrameRef = useRef<number | null>(null);
@@ -582,42 +591,57 @@ export function App(): JSX.Element {
     void startTour();
   };
 
+  const handleOnboardingClose = (): void => {
+    setIsOnboardingOpen(false);
+
+    if (typeof window !== "undefined") {
+      window.localStorage.setItem(NAVIGATION_ONBOARDING_STORAGE_KEY, "true");
+    }
+  };
+
   return (
     <calcite-shell content-behind>
-      <arcgis-scene
-        aria-label={sceneLabel}
-        id={SCENE_ELEMENT_ID}
-        itemId={MALBORK_WEB_SCENE_ID}
-        popupDisabled
-        ref={sceneRef}
-      />
       <div
-        aria-disabled={isTextExpanded}
-        aria-label="Map controls"
-        className={`scene-controls${isTextExpanded ? " is-disabled" : ""}`}
-        inert={isTextExpanded ? true : undefined}
+        aria-hidden={isOnboardingOpen}
+        className={`app-shell${isOnboardingOpen ? " is-locked" : ""}`}
+        inert={isOnboardingOpen ? true : undefined}
       >
-        <arcgis-zoom referenceElement={SCENE_ELEMENT_ID} visualScale="s" />
-        <arcgis-compass referenceElement={SCENE_ELEMENT_ID} visualScale="s" />
-      </div>
-      {sceneReady && slides.length > 0 ? (
-        <SceneOverlay
-          activeSlideId={activeSlideId}
-          currentSlide={currentSlide}
-          introParagraph={introParagraph}
-          isInfoOpen={isInfoOpen}
-          isTextExpanded={isTextExpanded}
-          isTourPlaying={isTourPlaying}
-          onInfoOpenChange={setIsInfoOpen}
-          onSlideSelect={handleSlideSelect}
-          onTextExpandedChange={setIsTextExpanded}
-          onTourToggle={handleTourToggle}
-          progressOffset={progressOffset}
-          slides={slides}
-          tourProgressCircumference={TOUR_PROGRESS_CIRCUMFERENCE}
+        <arcgis-scene
+          aria-label={sceneLabel}
+          id={SCENE_ELEMENT_ID}
+          itemId={MALBORK_WEB_SCENE_ID}
+          popupDisabled
+          ref={sceneRef}
         />
-      ) : null}
-      {statusMessage ? <div className="scene-status">{statusMessage}</div> : null}
+        <div
+          aria-disabled={isTextExpanded}
+          aria-label="Map controls"
+          className={`scene-controls${isTextExpanded ? " is-disabled" : ""}`}
+          inert={isTextExpanded ? true : undefined}
+        >
+          <arcgis-zoom referenceElement={SCENE_ELEMENT_ID} visualScale="s" />
+          <arcgis-compass referenceElement={SCENE_ELEMENT_ID} visualScale="s" />
+        </div>
+        {sceneReady && slides.length > 0 ? (
+          <SceneOverlay
+            activeSlideId={activeSlideId}
+            currentSlide={currentSlide}
+            introParagraph={introParagraph}
+            isInfoOpen={isInfoOpen}
+            isTextExpanded={isTextExpanded}
+            isTourPlaying={isTourPlaying}
+            onInfoOpenChange={setIsInfoOpen}
+            onSlideSelect={handleSlideSelect}
+            onTextExpandedChange={setIsTextExpanded}
+            onTourToggle={handleTourToggle}
+            progressOffset={progressOffset}
+            slides={slides}
+            tourProgressCircumference={TOUR_PROGRESS_CIRCUMFERENCE}
+          />
+        ) : null}
+        {statusMessage ? <div className="scene-status">{statusMessage}</div> : null}
+      </div>
+      <NavigationOnboarding open={isOnboardingOpen} onClose={handleOnboardingClose} />
     </calcite-shell>
   );
 }
