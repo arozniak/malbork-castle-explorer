@@ -6,13 +6,10 @@ interface SceneOverlayProps {
   introParagraph: string;
   isTextExpanded: boolean;
   isTourPlaying: boolean;
-  nextLayerLabel: string;
-  onLayerModeSelect: () => void;
   onSlideSelect: (slideId: string) => void;
   onTextExpandedChange: (expanded: boolean) => void;
   onTourToggle: () => void;
   progressOffset: number;
-  showLayerSwitch: boolean;
   slides: SlideModel[];
   tourProgressCircumference: number;
 }
@@ -23,13 +20,10 @@ export function SceneOverlay({
   introParagraph,
   isTextExpanded,
   isTourPlaying,
-  nextLayerLabel,
-  onLayerModeSelect,
   onSlideSelect,
   onTextExpandedChange,
   onTourToggle,
   progressOffset,
-  showLayerSwitch,
   slides,
   tourProgressCircumference,
 }: SceneOverlayProps) {
@@ -109,20 +103,6 @@ export function SceneOverlay({
           <span className="tour-toggle-icon" />
         </button>
       </div>
-      {showLayerSwitch ? (
-        <div className="layer-switch">
-          <button
-            aria-label={`Switch to ${nextLayerLabel} layer`}
-            className="layer-switch-button"
-            disabled={isTextExpanded}
-            onClick={onLayerModeSelect}
-            type="button"
-          >
-            <span aria-hidden="true" className="layer-switch-icon" />
-            <span className="layer-switch-label">{nextLayerLabel}</span>
-          </button>
-        </div>
-      ) : null}
     </div>
   );
 }

@@ -21,7 +21,7 @@ This version is intentionally concise and excludes current bug findings. It focu
 - Severity: Medium
 - Evidence: [src/App.tsx](src/App.tsx) contains the scene bootstrap, slide parsing, text shaping, layer resolution, layer persistence, focus-area resolution, orbit math, animation loop control, interaction overrides, and UI rendering in one file. The file also defines a large local type layer in [src/App.tsx](src/App.tsx#L29) through [src/App.tsx](src/App.tsx#L175).
 - Why it matters: This concentration of responsibilities increases the cost of any change. Small UX changes now require touching a file that mixes React state, ArcGIS interop, geometry math, and rendering logic. That encourages regressions because there is no clear seam between scene-domain logic and UI composition.
-- Recommendation: Split the file by responsibility. The most valuable extractions would be: `slide-model.ts`, `layer-mode.ts`, `tour-motion.ts`, and a smaller presentational component for the overlay controls. Keep ArcGIS interop and React orchestration at the edge, not interwoven throughout the main component.
+- Recommendation: Split the file by responsibility. The most valuable extractions would be: `slide-model.ts`, `tour-motion.ts`, and a smaller presentational component for the overlay controls. Keep ArcGIS interop and React orchestration at the edge, not interwoven throughout the main component.
 
 ### 2. Hand-written ArcGIS facsimile types reduce type safety and increase drift risk
 
@@ -30,11 +30,11 @@ This version is intentionally concise and excludes current bug findings. It focu
 - Why it matters: These interfaces only approximate the ArcGIS runtime objects. They are easy to get subtly wrong and will not automatically evolve when the SDK surface changes. That weakens TypeScript exactly in the most complex part of the app: geometry conversion, slide application, and camera control.
 - Recommendation: Prefer official ArcGIS SDK types where possible, even if only as type-only imports. If full SDK typing is too heavy for component-facing code, isolate the custom adapter layer into a small module and keep the number of ad hoc interfaces minimal and well documented.
 
-### 3. Layer switching and motion behavior depend on brittle string matching
+### 3. Tour motion behavior depends on brittle string matching
 
 - Severity: Medium
-- Evidence: Layer targets are resolved by hard-coded titles in [src/App.tsx](src/App.tsx#L13) and [src/App.tsx](src/App.tsx#L14), then matched with substring logic in [src/App.tsx](src/App.tsx#L383) and [src/App.tsx](src/App.tsx#L390). Tour behavior is also keyed off normalized slide titles in [src/App.tsx](src/App.tsx#L353), [src/App.tsx](src/App.tsx#L356), and [src/App.tsx](src/App.tsx#L364).
-- Why it matters: Scene metadata changes are common in content-driven projects. If a layer title or slide title changes in ArcGIS Online, behavior silently degrades: the wrong layer may stay visible, the chip may disappear, or a stop may lose its special motion profile. This is fragile because the failure mode is behavioral, not compile-time.
+- Evidence: Tour behavior is keyed off normalized slide titles in the runtime motion configuration path.
+- Why it matters: Scene metadata changes are common in content-driven projects. If a slide title changes in ArcGIS Online, a stop may lose its special motion profile. This is fragile because the failure mode is behavioral, not compile-time.
 - Recommendation: Prefer stable identifiers over human-readable titles whenever the scene provides them. If titles must be used, centralize the mapping in a single config structure with explicit validation and a visible error path when required content is missing.
 
 ### 4. Tour animation is custom per-frame camera math on the main thread
@@ -56,7 +56,7 @@ This plan addresses the two linked issues together because the current size of [
 
 - [src/App.tsx](src/App.tsx) keeps scene wiring, React state, top-level effects, and event handlers, but no longer owns geometry helpers, slide text shaping, or ArcGIS facsimile interfaces.
 - [src/scene-runtime-types.ts](src/scene-runtime-types.ts) becomes the single place for ArcGIS runtime type imports, narrow adapter types, and any required runtime guards for map-component interop.
-- New modules such as `slide-model.ts`, `layer-mode.ts`, and the existing [src/tour-motion.ts](src/tour-motion.ts) carry domain logic that is currently embedded in [src/App.tsx](src/App.tsx).
+- New modules such as `slide-model.ts` and the existing [src/tour-motion.ts](src/tour-motion.ts) carry domain logic that is currently embedded in [src/App.tsx](src/App.tsx).
 - Any remaining type assertions against ArcGIS runtime objects are isolated to a small adapter boundary instead of being spread through orbit, slide, and camera logic.
 
 ### Phase 1. Replace The Local ArcGIS Facsimile Type Layer
@@ -75,14 +75,7 @@ This plan addresses the two linked issues together because the current size of [
 - Keep the module API small: input is an ArcGIS slide plus configuration constants, output is a typed `SlideModel` ready for rendering and motion logic.
 - Exit criteria: [src/App.tsx](src/App.tsx) imports `buildSlideModel` and `SlideModel` instead of owning text-processing rules directly.
 
-### Phase 3. Extract Layer Visibility Resolution And Persistence
-
-- Create `layer-mode.ts` for the logic that resolves the mesh and Gaussian-splat targets, normalizes identifiers, applies visibility changes, and re-applies persisted layer mode after slide application.
-- Move the layer title constants and `LayerMode` type into that module or a closely related config file so they stop living beside the React component.
-- Keep the repository note about `view.map.allLayers` and slide re-application behavior as an explicit implementation requirement for this extraction.
-- Exit criteria: [src/App.tsx](src/App.tsx) only calls small functions such as `resolveLayerTargets` and `applyLayerMode`, without carrying the matching rules inline.
-
-### Phase 4. Move Tour Geometry And Camera Math To A Dedicated Motion Module
+### Phase 3. Move Tour Geometry And Camera Math To A Dedicated Motion Module
 
 - Consolidate orbit-center resolution, point conversion, spatial-reference handling, tour-stop state building, easing, and per-frame camera updates into [src/tour-motion.ts](src/tour-motion.ts).
 - Keep React concerns out of the motion module. The module should accept typed ArcGIS inputs and return motion state or apply a frame, while [src/App.tsx](src/App.tsx) remains responsible for effect timing and lifecycle cleanup.
@@ -100,9 +93,8 @@ This plan addresses the two linked issues together because the current size of [
 
 1. Move runtime types and adapter helpers into [src/scene-runtime-types.ts](src/scene-runtime-types.ts).
 2. Extract `slide-model.ts` and switch slide parsing to use it.
-3. Extract `layer-mode.ts` and re-validate layer toggling after slide changes.
-4. Move orbit and camera math into [src/tour-motion.ts](src/tour-motion.ts).
-5. Trim [src/App.tsx](src/App.tsx) and optionally extract a presentational overlay component.
+3. Move orbit and camera math into [src/tour-motion.ts](src/tour-motion.ts).
+4. Trim [src/App.tsx](src/App.tsx) and optionally extract a presentational overlay component.
 
 This order is deliberate. It removes type drift first, then peels off the lowest-risk pure logic, then isolates the more stateful tour logic once the typed boundaries are clearer.
 
@@ -110,8 +102,7 @@ This order is deliberate. It removes type drift first, then peels off the lowest
 
 - Run `npm run build` after each phase to catch type regressions early.
 - After phases 1 and 2, verify that scene load, slide parsing, and intro and expanded text rendering behave exactly as before.
-- After phase 3, manually confirm that mesh and Gaussian-splat toggling still works after tab changes and after slide application.
-- After phase 4, manually confirm that play and pause, orbit motion, and per-slide transitions still match the current behavior.
+- After phase 3, manually confirm that play and pause, orbit motion, and per-slide transitions still match the current behavior.
 - Keep each phase reviewable as a focused change set. If one phase starts mixing multiple concerns, split it again.
 
 ### Risks And Constraints

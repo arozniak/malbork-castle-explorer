@@ -681,3 +681,7 @@ It seems to work! However, I found a bug: when deployed, the timer around the pl
 
 I would like to make one more pass throught the app and correct some things that came up during a review. First of all, could you remove the home button from the top left map navigation?
 
+## Remove gaussian or mesh switch and update specs
+
+We did some reviews and decided for a few changes. First, we no longer want to support the mesh/gaussian layer switch. Instead, we want to support only the mesh layer. Please remove all related bits from the code (do a removal and cleanup), and also correct the app specification/description files so that they are up to date.
+

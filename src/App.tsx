@@ -3,15 +3,12 @@ import { flushSync } from "react-dom";
 
 import {
   getSceneViewFromElement,
-  type LayerTargets,
   type SceneElement,
   type WebSceneLike,
 } from "./scene-runtime-types";
-import { applyLayerModeToTargets, type LayerMode } from "./layer-mode";
 import { SceneOverlay } from "./scene-overlay";
 import {
   applySlideToSceneView,
-  refreshLayerTargetsAfterSlide,
   toArray,
 } from "./scene-runtime-utils";
 import { buildSlideModel, type SlideModel } from "./slide-model.ts";
@@ -260,8 +257,6 @@ const applySceneAttributionContent = (element: HTMLElement | null): boolean => {
 };
 
 export function App(): JSX.Element {
-  const layerModeRef = useRef<LayerMode>("mesh");
-  const layerTargetsRef = useRef<LayerTargets | null>(null);
   const lastTourProgressRef = useRef(0);
   const sceneRef = useRef<SceneElement | null>(null);
   const tourFrameRef = useRef<number | null>(null);
@@ -270,27 +265,10 @@ export function App(): JSX.Element {
   const [appliedSlideId, setAppliedSlideId] = useState<string | null>(null);
   const [isTextExpanded, setIsTextExpanded] = useState(false);
   const [isTourPlaying, setIsTourPlaying] = useState(false);
-  const [layerMode, setLayerMode] = useState<LayerMode>("mesh");
   const [loadError, setLoadError] = useState<string | null>(null);
   const [sceneReady, setSceneReady] = useState(false);
-  const [showLayerSwitch, setShowLayerSwitch] = useState(false);
   const [slides, setSlides] = useState<SlideModel[]>([]);
   const [tourProgress, setTourProgress] = useState(0);
-
-  const applyPersistedLayerMode = (nextMode = layerModeRef.current): void => {
-    if (layerTargetsRef.current) {
-      applyLayerModeToTargets(layerTargetsRef.current, nextMode);
-    }
-  };
-
-  const setPersistentLayerMode = (nextMode: LayerMode, syncState = true): void => {
-    layerModeRef.current = nextMode;
-    applyPersistedLayerMode(nextMode);
-
-    if (syncState) {
-      setLayerMode(nextMode);
-    }
-  };
 
   const syncTourProgress = (progress: number): void => {
     const normalizedProgress = Math.max(0, Math.min(1, progress));
@@ -303,13 +281,6 @@ export function App(): JSX.Element {
     flushSync(() => {
       setTourProgress(normalizedProgress);
     });
-  };
-
-  const refreshLayerTargets = (scene: WebSceneLike | null | undefined): void => {
-    const { nextTargets, showLayerSwitch: nextShowLayerSwitch } = refreshLayerTargetsAfterSlide(scene, layerModeRef.current);
-
-    layerTargetsRef.current = nextTargets;
-    setShowLayerSwitch(nextShowLayerSwitch);
   };
 
   const cancelTourFrame = (): void => {
@@ -418,10 +389,6 @@ export function App(): JSX.Element {
           }
         }
 
-        refreshLayerTargets(sceneView?.map ?? webScene);
-        setPersistentLayerMode("mesh", false);
-        setLayerMode("mesh");
-
         setSlides(slideModels);
         setActiveSlideId(initialSlide.id);
         setAppliedSlideId(null);
@@ -466,15 +433,13 @@ export function App(): JSX.Element {
 
     let isCancelled = false;
 
-    const applySlide = applySlideToSceneView(sceneView, activeSlide, applyPersistedLayerMode, true);
+    const applySlide = applySlideToSceneView(sceneView, activeSlide, true);
 
     void applySlide
       .then(() => {
         if (isCancelled) {
           return;
         }
-
-        refreshLayerTargets(sceneView.map ?? null);
 
         setAppliedSlideId(activeSlide.id);
         setLoadError(null);
@@ -669,9 +634,7 @@ export function App(): JSX.Element {
       setLoadError(null);
 
       try {
-        await applySlideToSceneView(sceneView, currentSlide, applyPersistedLayerMode, true);
-
-        refreshLayerTargets(sceneView.map ?? null);
+        await applySlideToSceneView(sceneView, currentSlide, true);
 
         setAppliedSlideId(currentSlide.id);
         setIsTourPlaying(true);
@@ -684,20 +647,6 @@ export function App(): JSX.Element {
 
     void startTour();
   };
-
-  const handleLayerModeSelect = (): void => {
-    if (!showLayerSwitch) {
-      return;
-    }
-
-    const nextMode: LayerMode = layerMode === "mesh" ? "splat" : "mesh";
-
-    setPersistentLayerMode(nextMode);
-    setLoadError(null);
-  };
-
-  const nextLayerMode: LayerMode = layerMode === "mesh" ? "splat" : "mesh";
-  const nextLayerLabel = nextLayerMode === "mesh" ? "Mesh" : "Gaussian Splat";
 
   return (
     <calcite-shell content-behind>
@@ -724,13 +673,10 @@ export function App(): JSX.Element {
           introParagraph={introParagraph}
           isTextExpanded={isTextExpanded}
           isTourPlaying={isTourPlaying}
-          nextLayerLabel={nextLayerLabel}
-          onLayerModeSelect={handleLayerModeSelect}
           onSlideSelect={handleSlideSelect}
           onTextExpandedChange={setIsTextExpanded}
           onTourToggle={handleTourToggle}
           progressOffset={progressOffset}
-          showLayerSwitch={showLayerSwitch}
           slides={slides}
           tourProgressCircumference={TOUR_PROGRESS_CIRCUMFERENCE}
         />

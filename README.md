@@ -1,6 +1,6 @@
 # Malbork Castle Explorer
 
-Malbork Castle Explorer is a full-screen 3D web experience built with React, Vite, ArcGIS Map Components, and Calcite. The application uses an ArcGIS Web Scene as the source of truth and presents slide-driven exploration, descriptive text overlays, a guided tour mode, and a layer toggle between mesh and Gaussian splat views.
+Malbork Castle Explorer is a full-screen 3D web experience built with React, Vite, ArcGIS Map Components, and Calcite. The application uses an ArcGIS Web Scene as the source of truth and presents slide-driven exploration, descriptive text overlays, and a guided tour mode over the mesh-based castle scene.
 
 ## Current Features
 
@@ -8,7 +8,6 @@ Malbork Castle Explorer is a full-screen 3D web experience built with React, Vit
 - Builds the top navigation from the scene presentation slides.
 - Shows intro and expanded descriptive text from slide descriptions.
 - Supports a guided tour with per-stop progress and orbit motion.
-- Lets the user switch between mesh and Gaussian splat layers.
 - Keeps user interactions in control: clicks and text expansion pause automation.
 
 ## Tech Stack
@@ -23,9 +22,8 @@ Malbork Castle Explorer is a full-screen 3D web experience built with React, Vit
 ## Project Structure
 
 - [src/App.tsx](src/App.tsx): top-level scene bootstrap, state, effects, and event orchestration.
-- [src/scene-overlay.tsx](src/scene-overlay.tsx): presentational overlay UI for tabs, text, tour control, and layer switch.
+- [src/scene-overlay.tsx](src/scene-overlay.tsx): presentational overlay UI for tabs, text, and tour control.
 - [src/slide-model.ts](src/slide-model.ts): slide normalization and text shaping.
-- [src/layer-mode.ts](src/layer-mode.ts): layer target resolution and visibility switching.
 - [src/tour-motion.ts](src/tour-motion.ts): orbit motion, progress math, and camera-frame application.
 - [src/scene-runtime-types.ts](src/scene-runtime-types.ts): shared runtime adapter types and scene element bridge.
 - [documentation/](documentation): project notes, technical constraints, prompts log, and review documents.

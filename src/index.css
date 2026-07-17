@@ -252,93 +252,6 @@ arcgis-scene {
   z-index: 2;
 }
 
-.layer-switch {
-  pointer-events: none;
-  position: absolute;
-  right: 1.15rem;
-  top: 1.15rem;
-  z-index: 2;
-}
-
-.layer-switch-button {
-  align-items: center;
-  backdrop-filter: blur(8px);
-  background: rgb(244 239 227 / 92%);
-  border: 1px solid rgb(111 95 58 / 28%);
-  border-radius: 999px;
-  box-shadow: 0 2px 8px rgb(62 46 19 / 12%);
-  cursor: pointer;
-  color: #5d4f31;
-  display: inline-flex;
-  gap: 0.36rem;
-  min-height: 2.2rem;
-  padding: 0.28rem 0.68rem 0.28rem 0.34rem;
-  pointer-events: auto;
-  transition:
-    transform 180ms ease,
-    border-color 180ms ease,
-    background-color 180ms ease,
-    box-shadow 180ms ease,
-    color 180ms ease;
-}
-
-.layer-switch-button:hover,
-.layer-switch-button:focus-visible {
-  background: rgb(249 245 235 / 98%);
-  border-color: rgb(111 95 58 / 42%);
-  box-shadow: 0 3px 10px rgb(62 46 19 / 15%);
-  color: #4f4329;
-  outline: none;
-  transform: translateY(-1px);
-}
-
-.layer-switch-button:disabled {
-  cursor: default;
-  opacity: 0.58;
-  transform: none;
-}
-
-.layer-switch-icon {
-  background: rgb(255 251 244 / 88%);
-  border: 1px solid rgb(111 95 58 / 22%);
-  border-radius: 999px;
-  box-shadow: inset 0 1px 0 rgb(255 255 255 / 45%);
-  flex: 0 0 auto;
-  height: 1.34rem;
-  position: relative;
-  width: 1.34rem;
-}
-
-.layer-switch-icon::before,
-.layer-switch-icon::after {
-  border: 1px solid rgb(111 95 58 / 28%);
-  border-radius: 0.12rem;
-  content: "";
-  height: 0.26rem;
-  position: absolute;
-  width: 0.34rem;
-}
-
-.layer-switch-icon::before {
-  background: rgb(204 189 160 / 72%);
-  left: 0.26rem;
-  top: 0.32rem;
-}
-
-.layer-switch-icon::after {
-  background: rgb(181 163 130 / 64%);
-  left: 0.52rem;
-  top: 0.54rem;
-}
-
-.layer-switch-label {
-  font-size: 0.78rem;
-  font-weight: 500;
-  letter-spacing: 0.01em;
-  line-height: 1;
-  text-shadow: none;
-}
-
 .tour-toggle {
   align-items: center;
   backdrop-filter: blur(14px);
@@ -490,15 +403,6 @@ arcgis-scene {
 
   .tour-control {
     bottom: 1.6rem;
-  }
-
-  .layer-switch {
-    right: 0.8rem;
-    top: 0.8rem;
-  }
-
-  .layer-switch-button {
-    width: 7.4rem;
   }
 
   .tour-toggle {

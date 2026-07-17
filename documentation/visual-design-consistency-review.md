@@ -19,7 +19,7 @@ The application already has a clear and appropriate design direction: minimal, c
 - Category: Inconsistency, visual hierarchy
 - Priority: High
 - Observation:
-  The top-left ArcGIS controls use a bright white default treatment, while the custom navigation, text, play button, and layer switch use a warm translucent palette. This creates two competing UI systems in the same frame.
+  The top-left ArcGIS controls use a bright white default treatment, while the custom navigation, text, and play button use a warm translucent palette. This creates two competing UI systems in the same frame.
 - Usability concern:
   The map controls draw disproportionate attention because they are higher contrast than the custom controls and sit near the top content area.
 - Design debt:
@@ -53,18 +53,18 @@ The application already has a clear and appropriate design direction: minimal, c
 - Recommended improvement:
   Define a tighter typographic scale for navigation, body copy, and utility actions while keeping the same restrained tone. The goal should be stronger hierarchy, not more decoration.
 
-### 4. Bottom controls do not yet read as one coordinated control family
+### 4. Bottom controls should be evaluated as a single-purpose tour zone
 
 - Category: Alignment, component styling
 - Priority: Medium
 - Observation:
-  The play button and the layer-switch chip are individually well designed, but they feel adjacent rather than intentionally related. The play button is a large warm circular primary control, while the chip is a small dark utility pill offset to the far right.
+  The play button now carries the entire bottom control role, which simplifies the composition and should reduce visual competition in the lower UI.
 - Usability concern:
-  The bottom-right chip can feel detached from the rest of the interaction model, especially on narrower desktop widths where the central and right-side controls read as separate systems rather than a coordinated control zone.
+  This simplification is positive, but the remaining bottom control still needs enough separation from attribution and expanded-text states to preserve clarity.
 - Design debt:
-  The system has primary and secondary controls, but no stronger compositional logic tying them together.
+  Earlier review notes assumed a multi-control bottom zone and should now be read as superseded by the mesh-only UI direction.
 - Recommended improvement:
-  Keep the current asymmetry, but refine the relationship through shared baseline logic, clearer spacing rhythm, and slightly stronger visual kinship between the two controls.
+  Treat the play button as the only intentional bottom interaction anchor and keep the surrounding spacing and attribution separation aligned to that simpler structure.
 
 ### 5. Expanded reading mode introduces visual friction through dual scrolling cues
 
@@ -97,7 +97,7 @@ The application already has a clear and appropriate design direction: minimal, c
 - Category: Inconsistency, usability concern
 - Priority: Low
 - Observation:
-  The ArcGIS attribution/footer text remains visible and visually active near the play button and layer-switch chip, especially on shorter desktop windows where the bottom edge becomes denser.
+  The ArcGIS attribution/footer text remains visible and visually active near the play button, especially on shorter desktop windows where the bottom edge becomes denser.
 - Usability concern:
   The bottom edge becomes busy and reduces the premium feel of the custom control area.
 - Design debt:
@@ -110,7 +110,7 @@ The application already has a clear and appropriate design direction: minimal, c
 - Category: Component styling, design debt
 - Priority: Low
 - Observation:
-  The tab rail, active tab, play button, and layer-switch chip all use related but slightly different treatments of blur, border strength, elevation, and highlight warmth. They belong to the same family, but not yet to the same exact system.
+  The tab rail, active tab, and play button all use related but slightly different treatments of blur, border strength, elevation, and highlight warmth. They belong to the same family, but not yet to the same exact system.
 - Usability concern:
   This does not create confusion, but it weakens the sense of polish.
 - Design debt:

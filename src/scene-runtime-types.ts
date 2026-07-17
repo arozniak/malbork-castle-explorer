@@ -99,11 +99,6 @@ export interface LayerLike {
 	visible?: boolean;
 }
 
-export interface LayerTargets {
-	mesh: LayerLike;
-	splat: LayerLike;
-}
-
 export interface WebSceneLike {
 	allLayers?: RuntimeCollectionLike<LayerLike> | null;
 	focusAreas?: FocusAreasLike | null;

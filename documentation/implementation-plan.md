@@ -2,7 +2,7 @@
 
 ## Malbork Scene UX Integration
 
-Implement the app around the provided public Web Scene as source of truth, driving tabs from scene slides and adding minimal overlay controls (tabs, expandable text, play/pause tour, layer switch thumbnail) while preserving user-first interaction rules so manual input always pauses automation.
+Implement the app around the provided public Web Scene as source of truth, driving tabs from scene slides and adding minimal overlay controls (tabs, expandable text, play/pause tour) while preserving user-first interaction rules so manual input always pauses automation.
 
 ## Steps
 
@@ -28,17 +28,13 @@ Implement the app around the provided public Web Scene as source of truth, drivi
 14. Camera motion remains exploratory for the first implementation. Start with one calm generic reveal motion that can be tested across all stops, then refine or replace weak stops with custom per-slide motion only after visual review.
 15. Interaction override rules: any click, including scene clicks and UI control clicks, pauses the tour. Clicking play toggles pause and resume. Clicking tabs during the tour immediately stops the tour and switches context.
 16. If text is expanded, the tour pauses immediately and play remains blocked until the text is collapsed again.
-15. Phase 4 - Layer switch thumbnail.
-16. Detect target layers from operational layers by title and layer type: `Malbork_GUGiK_GaussianSplat` as `GaussianSplatLayer` and `Malbork_GUGiK_3Dmesh` as the mesh or integrated mesh scene layer.
-17. Add a bottom-right thumbnail toggle with label; clicking swaps visibility between those two layers and updates the active indicator.
-18. Preserve other required scene layers and ground visibility from slide state when switching, so only the target pair is toggled.
-19. Defer polish and hardening for now.
-20. Keep the implementation focused on core experience first.
+17. Defer polish and hardening for now.
+18. Keep the implementation focused on core experience first.
 
 ## Relevant Files
 
-- `c:\Users\agn11392\OneDrive - Esri\Desktop\Malbork_castle_guide\malbork-castle\src\App.tsx` - main composition of scene, segmented tab rail, centered text overlay, play control, layer switch, and interaction and event wiring.
-- `c:\Users\agn11392\OneDrive - Esri\Desktop\Malbork_castle_guide\malbork-castle\src\index.css` - unobtrusive overlay layout, pill tabs, readability veil, text expansion, play control placement, and bottom-right thumbnail.
+- `c:\Users\agn11392\OneDrive - Esri\Desktop\Malbork_castle_guide\malbork-castle\src\App.tsx` - main composition of scene, segmented tab rail, centered text overlay, play control, and interaction and event wiring.
+- `c:\Users\agn11392\OneDrive - Esri\Desktop\Malbork_castle_guide\malbork-castle\src\index.css` - unobtrusive overlay layout, pill tabs, readability veil, text expansion, and play control placement.
 - `c:\Users\agn11392\OneDrive - Esri\Desktop\Malbork_castle_guide\malbork-castle\src\main.tsx` - only if a provider or context wrapper is needed for shared UI state.
 - `c:\Users\agn11392\OneDrive - Esri\Desktop\Malbork_castle_guide\Documentation\project-decisions.md` - document approved slide-order source and intro-text heuristic.
 - `c:\Users\agn11392\OneDrive - Esri\Desktop\Malbork_castle_guide\Documentation\technical-constraints.md` - update with UX behavior constraints for automation override and unobtrusive UI.
@@ -46,7 +42,7 @@ Implement the app around the provided public Web Scene as source of truth, drivi
 
 ## Verification
 
-1. Run `npm run build` in `malbork-castle` after each major phase: tabs and text overlay, auto-tour, and layer switch.
+1. Run `npm run build` in `malbork-castle` after each major phase: tabs and text overlay, and auto-tour.
 2. Manual UX checks in the browser.
 3. Initial load opens on Overview tab and play is paused by default.
 4. Tab click moves to the matching slide, including its focus area and saved layer state, and pauses any running tour.
@@ -54,14 +50,14 @@ Implement the app around the provided public Web Scene as source of truth, drivi
 6. The text block is centered below the tabs, uses no hard-edged panel, and keeps the scene visible behind a soft readability veil.
 7. Read more expands full text, remains scrollable only when needed, does not cover the play button area, and suspends auto-tour and camera motion.
 8. Play starts the reveal motion plus progress arc, advances slide by slide every roughly 7 seconds, pauses on any click, and stops at the final slide.
-9. Layer thumbnail toggles Gaussian splat versus mesh visibility correctly.
+9. The experience remains consistent across slides without any representation-switch UI.
 
 ## Decisions
 
 - Use web scene slide array order as the authoritative tab order.
 - Use sentence-aware intro truncation: 2 sentences for long descriptions, otherwise 1, with an adjustable threshold constant.
 - Use ArcGIS Map Components as the primary integration surface and rely on view and map object access exposed by `arcgis-scene` where component attributes are insufficient.
-- Treat the provided UX images as visual references for implementation: centered pill tabs, warm translucent text overlay, circular bottom-center play control, and bottom-right layer thumbnail.
+- Treat the provided UX images as visual references for implementation: centered pill tabs, warm translucent text overlay, and circular bottom-center play control.
 - For phase 2 transitions, apply the selected slide object to the SceneView rather than reusing only its saved viewpoint so focus areas and slide state remain intact.
 - Append each new user prompt to `Documentation/prompts.md` unless the user explicitly says otherwise.
 
@@ -69,5 +65,4 @@ Implement the app around the provided public Web Scene as source of truth, drivi
 
 1. If intro truncation feels too verbose or too short in testing, switch to a strict character clamp such as 200 to 240 characters while keeping sentence-boundary fallback.
 2. Drift implementation can start as lightweight periodic `goTo` movement around the current viewpoint and only move to authored per-slide drift offsets if the motion quality is not good enough.
-3. Layer-toggle thumbnail artwork can start as a simple static preview and be upgraded later once core behavior is stable.
-4. Camera motion strategy: treat the first motion pass as experimental, validate one calm generic reveal against all stops, then promote only the weak stops to custom per-slide keyframes after visual review.
+3. Camera motion strategy: treat the first motion pass as experimental, validate one calm generic reveal against all stops, then promote only the weak stops to custom per-slide keyframes after visual review.

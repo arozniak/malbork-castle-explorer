@@ -7,7 +7,6 @@ Scope reviewed:
 - [src/App.tsx](src/App.tsx)
 - [src/scene-overlay.tsx](src/scene-overlay.tsx)
 - [src/slide-model.ts](src/slide-model.ts)
-- [src/layer-mode.ts](src/layer-mode.ts)
 - [src/tour-motion.ts](src/tour-motion.ts)
 - [src/index.css](src/index.css)
 - [src/scene-runtime-types.ts](src/scene-runtime-types.ts)
@@ -18,11 +17,11 @@ This review focuses only on cleanup opportunities that were not already covered 
 
 ## Findings
 
-### 1. Dead CSS selectors remain from an older layer-switch design
+### 1. README and review notes should track the current mesh-only product surface
 
-- Category: Unused CSS, obsolete experiments
-- Evidence: [src/index.css](src/index.css) still defines `.layer-switch-thumb` and `.layer-switch-badge` in the mobile media query, but there is no corresponding markup in [src/scene-overlay.tsx](src/scene-overlay.tsx).
-- Recommended action: Remove those selectors from [src/index.css](src/index.css).
+- Category: Obsolete documentation
+- Evidence: Earlier review artifacts and README drafts described a representation switch that is no longer in the shipped experience.
+- Recommended action: Keep historical prompt history intact, but update current-state docs whenever product scope removes experimental controls.
 
 ### 2. The README is still scaffold text, not project documentation
 
@@ -30,17 +29,17 @@ This review focuses only on cleanup opportunities that were not already covered 
 - Evidence: [README.md](README.md) still describes the generic ArcGIS template, includes the scaffold command, and references `@arcgis/charts-components`, which is not part of the current app.
 - Recommended action: Replace [README.md](README.md) with project-specific setup, architecture, and run instructions.
 
-### 3. `toArray` is duplicated across three modules
+### 3. `toArray` is duplicated across runtime modules
 
 - Category: Duplicate logic
-- Evidence: Equivalent `toArray` helpers exist in [src/App.tsx](src/App.tsx), [src/layer-mode.ts](src/layer-mode.ts), and [src/tour-motion.ts](src/tour-motion.ts).
+- Evidence: Equivalent `toArray` helpers exist in [src/scene-runtime-utils.ts](src/scene-runtime-utils.ts) and [src/tour-motion.ts](src/tour-motion.ts), and earlier versions also duplicated it inside the app runtime.
 - Recommended action: Move this helper into one shared utility module or into [src/scene-runtime-types.ts](src/scene-runtime-types.ts) if that remains the common runtime boundary.
 
-### 4. Slide-application follow-up logic is duplicated in App
+### 4. Slide-application orchestration should stay narrow as features are removed
 
-- Category: Duplicate logic, cleanup opportunities
-- Evidence: [src/App.tsx](src/App.tsx) repeats the same post-slide sequence in two places: re-resolve layer targets, update `showLayerSwitch`, and reapply persisted layer mode after a slide is applied.
-- Recommended action: Extract a small helper such as `refreshLayerTargetsAfterSlide(sceneView)` to keep the behavior in one place.
+- Category: Cleanup opportunities
+- Evidence: The app has already become simpler after removing representation switching, which is a good signal that slide application concerns should remain focused on scene state and tour orchestration only.
+- Recommended action: Continue resisting feature-specific state in [src/App.tsx](src/App.tsx) unless it is part of the durable product surface.
 
 ### 5. App still carries a local runtime helper that no longer fits the extracted structure
 
@@ -66,5 +65,5 @@ This review focuses only on cleanup opportunities that were not already covered 
 Fixes finding 1.
 2. Rewrite [README.md](README.md).
 Fixes finding 2.
-3. Extract shared helpers to remove the remaining duplication in [src/App.tsx](src/App.tsx), [src/layer-mode.ts](src/layer-mode.ts), and [src/tour-motion.ts](src/tour-motion.ts).
+3. Extract shared helpers to remove the remaining duplication in [src/scene-runtime-utils.ts](src/scene-runtime-utils.ts) and [src/tour-motion.ts](src/tour-motion.ts).
 Fixes findings 3, 4, 5, and 6.

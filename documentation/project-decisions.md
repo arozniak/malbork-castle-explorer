@@ -14,7 +14,7 @@
 - Intro text is derived from slide descriptions using a sentence-aware rule: first 2 sentences for descriptions at least 220 characters long, otherwise first 1 sentence.
 - Phase 2 renders custom pill tabs from the normalized slide model and drives camera navigation from the selected slide viewpoint.
 - Phase 2 uses a soft in-scene readability overlay instead of a separate side panel for descriptive text.
-- Phase 4 layer selection persists until the user changes it and is reapplied after slide state restores so focus areas still work in both mesh and Gaussian splat modes.
+- The current experience targets the mesh-based scene presentation only; the earlier mesh versus Gaussian-splat representation switch is no longer part of the product surface.
 - No authentication flow is included.
 - Phase 1 stores a normalized in-app slide model from the loaded scene so later UI work can use consistent slide data.
 
@@ -33,8 +33,7 @@
 - Slide-driven scene state restoration and Web Scene driven navigation: official ArcGIS Maps SDK for JavaScript product documentation and Web Scene based scene workflows.
 	https://developers.arcgis.com/javascript/latest/
 	https://developers.arcgis.com/javascript/latest/get-started/
-- Layer switching context, including Gaussian Splat support and 3D scene capabilities: official ArcGIS Maps SDK for JavaScript sample/reference surface.
-	https://developers.arcgis.com/javascript/latest/sample-code/layers-gaussiansplatlayer/
+- 3D scene capabilities and scene-layer integration context: official ArcGIS Maps SDK for JavaScript reference surface.
 	https://developers.arcgis.com/javascript/latest/layers/
 - Map Components-first integration surface used by the app shell and scene controls.
 	https://developers.arcgis.com/javascript/latest/components/
