@@ -80,6 +80,11 @@ arcgis-scene {
   z-index: 2;
 }
 
+.scene-overlay.is-mobile-landscape {
+  display: flex;
+  justify-content: center;
+}
+
 .scene-overlay::before {
   background: linear-gradient(
     180deg,
@@ -104,6 +109,7 @@ arcgis-scene {
   align-items: flex-end;
   display: flex;
   flex-direction: column;
+  max-width: calc(100vw - 2.3rem);
   pointer-events: none;
   position: absolute;
   right: 1.15rem;
@@ -113,6 +119,7 @@ arcgis-scene {
 
 .scene-info-button {
   align-items: center;
+  align-self: flex-end;
   backdrop-filter: blur(10px);
   background: rgb(244 239 227 / 84%);
   border: 1px solid rgb(111 95 58 / 22%);
@@ -169,10 +176,14 @@ arcgis-scene {
   background: linear-gradient(180deg, rgb(19 15 12 / 84%), rgb(19 15 12 / 76%));
   border: 1px solid rgb(255 244 231 / 16%);
   border-radius: 1.1rem;
+  box-sizing: border-box;
   box-shadow: 0 24px 48px rgb(0 0 0 / 24%);
   color: #fff8f0;
   margin-top: 0.55rem;
+  max-height: calc(100dvh - 5.2rem);
   max-width: min(26rem, calc(100vw - 2.3rem));
+  overflow-x: hidden;
+  overflow-y: auto;
   padding: 1rem 1rem 1.05rem;
   pointer-events: auto;
   width: min(26rem, calc(100vw - 2.3rem));
@@ -273,6 +284,69 @@ arcgis-scene {
   scrollbar-width: none;
 }
 
+.mobile-location-nav {
+  align-items: center;
+  backdrop-filter: blur(12px);
+  background: linear-gradient(180deg, var(--ui-dark-glass), var(--ui-dark-glass-strong));
+  border: 1px solid var(--ui-border-soft);
+  border-radius: 999px;
+  box-shadow: 0 18px 38px rgb(0 0 0 / 18%);
+  display: grid;
+  gap: 0.4rem;
+  grid-template-columns: minmax(3rem, auto) minmax(0, 1fr) minmax(3rem, auto);
+  max-width: 100%;
+  padding: 0.3rem;
+  pointer-events: auto;
+  width: min(28rem, 100%);
+}
+
+.mobile-location-nav__arrow {
+  align-items: center;
+  background: transparent;
+  border: 0;
+  border-radius: 999px;
+  color: var(--ui-ink-soft);
+  cursor: pointer;
+  display: inline-flex;
+  font: inherit;
+  font-size: 1.2rem;
+  height: 2.9rem;
+  justify-content: center;
+  min-width: 2.9rem;
+  transition:
+    background-color 180ms ease,
+    color 180ms ease,
+    transform 180ms ease;
+}
+
+.mobile-location-nav__arrow:hover,
+.mobile-location-nav__arrow:focus-visible {
+  background: rgb(255 244 230 / 12%);
+  color: #fff9f1;
+  outline: none;
+  transform: translateY(-1px);
+}
+
+.mobile-location-nav__arrow:disabled {
+  color: rgb(250 244 236 / 36%);
+  cursor: default;
+  transform: none;
+}
+
+.mobile-location-nav__label {
+  color: #fff8f0;
+  font-size: 0.96rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  line-height: 1.2;
+  overflow: hidden;
+  padding: 0 0.35rem;
+  text-align: center;
+  text-overflow: ellipsis;
+  text-shadow: 0 6px 20px rgb(0 0 0 / 26%);
+  white-space: nowrap;
+}
+
 .slide-tab-rail::-webkit-scrollbar {
   display: none;
 }
@@ -326,6 +400,10 @@ arcgis-scene {
 }
 
 .slide-text.is-expanded {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  max-height: calc(100dvh - 12rem);
+  overflow: hidden;
   width: min(40rem, 68vw);
 }
 
@@ -339,8 +417,9 @@ arcgis-scene {
 }
 
 .slide-text-expanded {
+  min-height: 0;
   margin: 0;
-  max-height: calc(100vh - 12.5rem);
+  max-height: none;
   max-width: 100%;
   overflow-y: auto;
   padding: 0 0.35rem 0.5rem;
@@ -389,6 +468,41 @@ arcgis-scene {
   position: absolute;
   transform: translateX(-50%);
   z-index: 2;
+}
+
+.mobile-rotation-notice {
+  align-self: center;
+  backdrop-filter: blur(14px);
+  background: linear-gradient(180deg, rgb(20 16 13 / 82%), rgb(20 16 13 / 70%));
+  border: 1px solid rgb(255 244 231 / 14%);
+  border-radius: 1.2rem;
+  box-shadow: 0 24px 48px rgb(0 0 0 / 24%);
+  color: #fff8f0;
+  margin: auto 1rem;
+  max-width: min(26rem, calc(100vw - 2rem));
+  padding: 1rem 1.1rem;
+  pointer-events: auto;
+  position: relative;
+  text-align: center;
+  width: min(26rem, calc(100vw - 2rem));
+  z-index: 2;
+}
+
+.mobile-rotation-notice__title,
+.mobile-rotation-notice__copy {
+  margin: 0;
+}
+
+.mobile-rotation-notice__title {
+  color: var(--ui-cream-strong);
+  font-size: 1.02rem;
+  font-weight: 600;
+}
+
+.mobile-rotation-notice__copy {
+  color: var(--ui-ink-soft);
+  line-height: 1.6;
+  margin-top: 0.55rem;
 }
 
 .tour-toggle {
@@ -862,5 +976,90 @@ arcgis-scene {
   .tour-toggle {
     height: 4.3rem;
     width: 4.3rem;
+  }
+}
+
+@media (max-width: 767px) {
+  .scene-info-panel {
+    align-items: stretch;
+    left: 0.8rem;
+    max-width: none;
+    right: 0.8rem;
+    top: 0.8rem;
+  }
+
+  .scene-about-popup {
+    max-height: calc(100dvh - 4.8rem);
+    max-width: none;
+    width: 100%;
+  }
+
+  .slide-ui-stack {
+    gap: 0.55rem;
+    top: 3.6rem;
+    width: calc(100vw - 1rem);
+  }
+
+  .slide-text,
+  .slide-text.is-expanded {
+    width: calc(100vw - 1rem);
+  }
+
+  .slide-text {
+    max-height: calc(100dvh - 13rem);
+    overflow: hidden;
+  }
+
+  .slide-text.is-expanded {
+    max-height: calc(100dvh - 14rem);
+  }
+
+  .slide-text-intro,
+  .slide-text-expanded {
+    max-width: 100%;
+  }
+
+  .slide-text-intro {
+    font-size: clamp(1.02rem, 0.98rem + 0.42vw, 1.14rem);
+  }
+
+  .slide-text-expanded {
+    padding: 0 0.25rem 0.35rem;
+    scrollbar-gutter: auto;
+  }
+
+  .slide-text-toggle {
+    margin-top: 0.85rem;
+  }
+
+  .tour-control {
+    bottom: 1.25rem;
+  }
+
+  .tour-toggle {
+    height: 4.1rem;
+    width: 4.1rem;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 1200px) {
+  .slide-ui-stack {
+    max-width: min(95vw, 62rem);
+    width: min(95vw, 62rem);
+  }
+
+  .slide-tab {
+    font-size: 0.9rem;
+    min-height: 2.25rem;
+    padding: 0.72rem 0.96rem;
+  }
+
+  .slide-text,
+  .slide-text.is-expanded {
+    width: min(44rem, 82vw);
+  }
+
+  .slide-text-expanded {
+    max-height: calc(100vh - 13.5rem);
   }
 }

@@ -757,3 +757,64 @@ Okay, not bad. But remove the circle from the horizontal line when showing drag 
 
 Almost perfect. Make the text a bit bigger. Also, make sure that the prompts are added to the prompt file in the right order. Show it only for the first time when the user opens the app, not on every refresh
 
+## Responsive design and mobile support planning request
+
+I would like to work on a responsive design & mobile device support next. I would like you to read them, confirm that you understand, let me know if anything is missing and prepare an implementation plan. Do not implement anything yet.
+
+Here is a summary of what I would like to implement:
+
+Mobile (<768px)
+- Portrait mode only
+- No map controls
+- Info button in the top-right corner
+- Use arrow-based navigation for locations:
+- Previous Location ← Current Location → Next Location
+- Navigation should be simple and touch-friendly
+- Text panel adapts to small screens
+- Use as much horizontal space as possible for text
+- Text can scroll vertically if needed
+- Text must never cover the play button
+- No desktop onboarding popup
+- No horizontally scrollable tabs
+
+Tablet (768px-1200px)
+- Keep the existing tab-based navigation
+- Tabs should remain clickable and behave similarly to desktop
+- Adjust spacing and sizing responsively if needed
+- Avoid introducing a separate navigation system unless necessary
+
+Desktop (>1200px)
+- Keep the current experience unchanged
+- Preserve existing tabs
+- Preserve existing map controls
+- Mobile-specific changes must not affect desktop behavior
+
+General requirements
+- Prioritize reliability over visual complexity
+- Avoid automatic scrolling, snapping, or auto-centering navigation elements
+- Test mobile, tablet, and desktop layouts independently
+- Desktop behavior should be treated as the baseline and should remain unchanged unless explicitly requested
+
+## Responsive plan clarifications
+
+1. Yes, that's okay. 2. Hide the onboarding popup on both mobile and tablet. 3. correct 4. Correct
+
+## Responsive implementation start
+
+Do it 
+
+## Responsive bug report
+
+I tested the responsive behavior. I found the following bugs: 1) in the mobile version, the expanded text covers the play button 2) in mobile version, the size of the info panel opening after clicking the open button is not adjusted. it should also be adjusted to the size of the screen. 3) when changing the screen size, in the tablet version the map control buttons are not rendered correctly
+
+## Mobile info button spacing request
+
+that's great! the only thing I would like differently is in the mobile design the info button should be above the location tabs: right now they are overlapping when the screen is small which is not a great experience.
+
+## Mobile intro shortening and overlap regression request
+
+okay, the info icon works great. but looking at the mobile design, I think that the intro text is too long. change the intro to include only one sentence when on mobile. also, I noticed a regression bug: the text on mobile is now overlapping the play button, which is something we discussed shouldn't happeen.
+
+## Mobile sentence splitting and full mobile coverage request
+
+it should work for every mobile size, as we have defined earlier. Also, if you keep just one sentence in the intro, the rest of the text should go into the part that appears when the user clicks "read more". you didnt think about it. do you know what I mean? also in the st mary church, the "st." is not a sentence, it's just a short for saint.

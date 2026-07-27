@@ -3,6 +3,17 @@ import type { SceneSlideLike, TextValueLike } from "./scene-runtime-types";
 const LONG_DESCRIPTION_THRESHOLD = 220;
 const LONG_DESCRIPTION_SENTENCE_COUNT = 2;
 const SHORT_DESCRIPTION_SENTENCE_COUNT = 1;
+const ABBREVIATION_PLACEHOLDER = "__MALBORK_ABBR_DOT__";
+const SENTENCE_ABBREVIATIONS = [
+  "St.",
+  "Mr.",
+  "Mrs.",
+  "Ms.",
+  "Dr.",
+  "Prof.",
+  "Sr.",
+  "Jr.",
+];
 
 export interface SlideModel {
   description: string;
@@ -27,13 +38,30 @@ function readText(value: TextValueLike): string {
   return "";
 }
 
-function splitSentences(text: string): string[] {
-  const matches = text.match(/[^.!?]+[.!?]+(?:\s+|$)|[^.!?]+$/g);
-
-  return matches?.map((sentence) => sentence.trim()).filter(Boolean) ?? [];
+function escapeRegExp(value: string): string {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }
 
-function buildIntroText(description: string): string {
+function protectAbbreviations(text: string): string {
+  return SENTENCE_ABBREVIATIONS.reduce((result, abbreviation) => {
+    const pattern = new RegExp(escapeRegExp(abbreviation), "g");
+
+    return result.replace(pattern, abbreviation.replace(".", ABBREVIATION_PLACEHOLDER));
+  }, text);
+}
+
+function restoreAbbreviations(text: string): string {
+  return text.replaceAll(ABBREVIATION_PLACEHOLDER, ".");
+}
+
+export function splitSentences(text: string): string[] {
+  const normalizedText = protectAbbreviations(text.trim());
+  const matches = normalizedText.match(/[^.!?]+[.!?]+(?:\s+|$)|[^.!?]+$/g);
+
+  return matches?.map((sentence) => restoreAbbreviations(sentence.trim())).filter(Boolean) ?? [];
+}
+
+function buildIntroText(description: string, introSentenceCountOverride?: number): string {
   const sentences = splitSentences(description);
 
   if (sentences.length === 0) {
@@ -41,9 +69,10 @@ function buildIntroText(description: string): string {
   }
 
   const sentenceCount =
-    description.length >= LONG_DESCRIPTION_THRESHOLD
+    introSentenceCountOverride ??
+    (description.length >= LONG_DESCRIPTION_THRESHOLD
       ? LONG_DESCRIPTION_SENTENCE_COUNT
-      : SHORT_DESCRIPTION_SENTENCE_COUNT;
+      : SHORT_DESCRIPTION_SENTENCE_COUNT);
 
   return sentences.slice(0, sentenceCount).join(" ");
 }
@@ -85,11 +114,11 @@ function groupSentencesIntoParagraphs(sentences: string[]): string[] {
   return paragraphs;
 }
 
-function buildTextParagraphs(description: string): {
+export function buildTextParagraphs(description: string, introSentenceCountOverride?: number): {
   extraParagraphs: string[];
   introParagraph: string;
 } {
-  const introParagraph = buildIntroText(description);
+  const introParagraph = buildIntroText(description, introSentenceCountOverride);
 
   if (!description) {
     return {

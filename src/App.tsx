@@ -11,7 +11,11 @@ import {
   applySlideToSceneView,
   toArray,
 } from "./scene-runtime-utils";
-import { buildSlideModel, type SlideModel } from "./slide-model.ts";
+import {
+  buildSlideModel,
+  buildTextParagraphs,
+  type SlideModel,
+} from "./slide-model.ts";
 import {
   TOUR_PROGRESS_CIRCUMFERENCE,
   applyOrbitFrame,
@@ -28,6 +32,8 @@ import "@arcgis/map-components/components/arcgis-zoom";
 import "@esri/calcite-components/components/calcite-shell";
 
 const MALBORK_WEB_SCENE_ID = "a032056172494a81a2105ef9232ea9a9";
+const MOBILE_MAX_WIDTH = 767;
+const TABLET_MAX_WIDTH = 1200;
 const NAVIGATION_ONBOARDING_STORAGE_KEY = "malbork-navigation-onboarding-dismissed";
 const SCENE_ELEMENT_ID = "malbork-scene";
 const MAP_CONTROL_ICON_STYLE_ATTRIBUTE = "data-malbork-map-control-icon-style";
@@ -119,35 +125,73 @@ const MAP_CONTROL_SHADOW_CSS = `
   }
 `;
 
-const applyMapControlIconStyle = (iconElement: Element): void => {
-  const shadowRoot = iconElement.shadowRoot;
+const applyMapControlIconStyle = (iconElement: Element | null): boolean => {
+  const shadowRoot = iconElement?.shadowRoot;
 
-  if (!shadowRoot || shadowRoot.querySelector(`style[${MAP_CONTROL_ICON_STYLE_ATTRIBUTE}]`)) {
-    return;
+  if (!shadowRoot) {
+    return false;
   }
 
-  const styleElement = document.createElement("style");
+  if (!shadowRoot.querySelector(`style[${MAP_CONTROL_ICON_STYLE_ATTRIBUTE}]`)) {
+    const styleElement = document.createElement("style");
 
-  styleElement.setAttribute(MAP_CONTROL_ICON_STYLE_ATTRIBUTE, "true");
-  styleElement.textContent = MAP_CONTROL_ICON_SHADOW_CSS;
-  shadowRoot.append(styleElement);
+    styleElement.setAttribute(MAP_CONTROL_ICON_STYLE_ATTRIBUTE, "true");
+    styleElement.textContent = MAP_CONTROL_ICON_SHADOW_CSS;
+    shadowRoot.append(styleElement);
+  }
+
+  return true;
 };
 
-const applyMapControlButtonStyle = (buttonElement: Element): void => {
-  const shadowRoot = buttonElement.shadowRoot;
+type ViewportMode = "mobile" | "tablet" | "desktop";
 
-  if (!shadowRoot || shadowRoot.querySelector(`style[${MAP_CONTROL_BUTTON_STYLE_ATTRIBUTE}]`)) {
-    return;
+interface ViewportState {
+  isMobileLandscape: boolean;
+  mode: ViewportMode;
+}
+
+function classifyViewportMode(width: number): ViewportMode {
+  if (width <= MOBILE_MAX_WIDTH) {
+    return "mobile";
   }
 
-  const styleElement = document.createElement("style");
+  if (width <= TABLET_MAX_WIDTH) {
+    return "tablet";
+  }
 
-  styleElement.setAttribute(MAP_CONTROL_BUTTON_STYLE_ATTRIBUTE, "true");
-  styleElement.textContent = MAP_CONTROL_BUTTON_SHADOW_CSS;
-  shadowRoot.append(styleElement);
-  shadowRoot.querySelectorAll("calcite-icon").forEach((iconElement) => {
-    applyMapControlIconStyle(iconElement);
-  });
+  return "desktop";
+}
+
+function getViewportState(): ViewportState {
+  if (typeof window === "undefined") {
+    return {
+      isMobileLandscape: false,
+      mode: "desktop",
+    };
+  }
+
+  const mode = classifyViewportMode(window.innerWidth);
+
+  return {
+    isMobileLandscape: mode === "mobile" && window.innerWidth > window.innerHeight,
+    mode,
+  };
+}
+
+const applyMapControlButtonStyle = (buttonElement: Element | null): boolean => {
+  const shadowRoot = buttonElement?.shadowRoot;
+
+  if (!shadowRoot) {
+    return false;
+  }
+
+  if (!shadowRoot.querySelector(`style[${MAP_CONTROL_BUTTON_STYLE_ATTRIBUTE}]`)) {
+    const styleElement = document.createElement("style");
+
+    styleElement.setAttribute(MAP_CONTROL_BUTTON_STYLE_ATTRIBUTE, "true");
+    styleElement.textContent = MAP_CONTROL_BUTTON_SHADOW_CSS;
+    shadowRoot.append(styleElement);
+  }
 
   const nativeButton = shadowRoot.querySelector<HTMLButtonElement>("button");
 
@@ -160,6 +204,11 @@ const applyMapControlButtonStyle = (buttonElement: Element): void => {
       }
     });
   }
+
+  const iconElements = Array.from(shadowRoot.querySelectorAll("calcite-icon"));
+  const iconsReady = iconElements.length > 0 && iconElements.every((iconElement) => applyMapControlIconStyle(iconElement));
+
+  return nativeButton !== null && iconsReady;
 };
 
 const applyMapControlStyle = (element: HTMLElement | null): boolean => {
@@ -169,25 +218,25 @@ const applyMapControlStyle = (element: HTMLElement | null): boolean => {
     return false;
   }
 
-  const existingStyle = shadowRoot.querySelector(`style[${MAP_CONTROL_STYLE_ATTRIBUTE}]`);
+  if (!shadowRoot.querySelector(`style[${MAP_CONTROL_STYLE_ATTRIBUTE}]`)) {
+    const styleElement = document.createElement("style");
 
-  if (existingStyle) {
-    return true;
+    styleElement.setAttribute(MAP_CONTROL_STYLE_ATTRIBUTE, "true");
+    styleElement.textContent = MAP_CONTROL_SHADOW_CSS;
+    shadowRoot.append(styleElement);
   }
 
-  const styleElement = document.createElement("style");
-
-  styleElement.setAttribute(MAP_CONTROL_STYLE_ATTRIBUTE, "true");
-  styleElement.textContent = MAP_CONTROL_SHADOW_CSS;
-  shadowRoot.append(styleElement);
   shadowRoot.querySelectorAll<HTMLElement>(".arcgis-button, .root.arcgis-button").forEach((wrapperElement) => {
     wrapperElement.style.background = "transparent";
   });
-  shadowRoot.querySelectorAll("calcite-button").forEach((buttonElement) => {
-    applyMapControlButtonStyle(buttonElement);
-  });
 
-  return true;
+  const buttonElements = Array.from(shadowRoot.querySelectorAll("calcite-button"));
+
+  if (buttonElements.length === 0) {
+    return false;
+  }
+
+  return buttonElements.every((buttonElement) => applyMapControlButtonStyle(buttonElement));
 };
 
 export function App(): JSX.Element {
@@ -211,6 +260,11 @@ export function App(): JSX.Element {
   const [sceneReady, setSceneReady] = useState(false);
   const [slides, setSlides] = useState<SlideModel[]>([]);
   const [tourProgress, setTourProgress] = useState(0);
+  const [viewportState, setViewportState] = useState<ViewportState>(() => getViewportState());
+
+  const viewportMode = viewportState.mode;
+  const shouldRenderMapControls = viewportMode !== "mobile";
+  const shouldShowOnboarding = viewportMode === "desktop" && isOnboardingOpen;
 
   const syncTourProgress = (progress: number): void => {
     const normalizedProgress = Math.max(0, Math.min(1, progress));
@@ -249,6 +303,25 @@ export function App(): JSX.Element {
   };
 
   useEffect(() => {
+    const handleViewportChange = (): void => {
+      setViewportState(getViewportState());
+    };
+
+    handleViewportChange();
+    window.addEventListener("resize", handleViewportChange);
+    window.addEventListener("orientationchange", handleViewportChange);
+
+    return () => {
+      window.removeEventListener("resize", handleViewportChange);
+      window.removeEventListener("orientationchange", handleViewportChange);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!shouldRenderMapControls) {
+      return;
+    }
+
     let frameId: number | null = null;
 
     const styleControls = (): void => {
@@ -270,7 +343,7 @@ export function App(): JSX.Element {
         cancelAnimationFrame(frameId);
       }
     };
-  }, []);
+  }, [shouldRenderMapControls, viewportMode]);
 
   useEffect(() => {
     const sceneElement = sceneRef.current;
@@ -529,8 +602,19 @@ export function App(): JSX.Element {
   const sceneLabel = currentSlide
     ? `Malbork Castle 3D scene. Active stop: ${currentSlide.title}.`
     : "Malbork Castle 3D scene.";
-  const introParagraph =
-    currentSlide?.introParagraph || currentSlide?.fullText || "Description unavailable for this stop.";
+  const currentSlideText = currentSlide
+    ? (viewportMode === "mobile"
+      ? buildTextParagraphs(currentSlide.fullText, 1)
+      : {
+        extraParagraphs: currentSlide.extraParagraphs,
+        introParagraph: currentSlide.introParagraph,
+      })
+    : {
+      extraParagraphs: [],
+      introParagraph: "Description unavailable for this stop.",
+    };
+  const introParagraph = currentSlideText.introParagraph || "Description unavailable for this stop.";
+  const extraParagraphs = currentSlideText.extraParagraphs;
   const progressOffset = getProgressDashOffset(tourProgress);
 
   const handleSlideSelect = (slideId: string): void => {
@@ -602,9 +686,9 @@ export function App(): JSX.Element {
   return (
     <calcite-shell content-behind>
       <div
-        aria-hidden={isOnboardingOpen}
-        className={`app-shell${isOnboardingOpen ? " is-locked" : ""}`}
-        inert={isOnboardingOpen ? true : undefined}
+        aria-hidden={shouldShowOnboarding}
+        className={`app-shell${shouldShowOnboarding ? " is-locked" : ""}`}
+        inert={shouldShowOnboarding ? true : undefined}
       >
         <arcgis-scene
           aria-label={sceneLabel}
@@ -613,21 +697,25 @@ export function App(): JSX.Element {
           popupDisabled
           ref={sceneRef}
         />
-        <div
-          aria-disabled={isTextExpanded}
-          aria-label="Map controls"
-          className={`scene-controls${isTextExpanded ? " is-disabled" : ""}`}
-          inert={isTextExpanded ? true : undefined}
-        >
-          <arcgis-zoom referenceElement={SCENE_ELEMENT_ID} visualScale="s" />
-          <arcgis-compass referenceElement={SCENE_ELEMENT_ID} visualScale="s" />
-        </div>
+        {shouldRenderMapControls ? (
+          <div
+            aria-disabled={isTextExpanded}
+            aria-label="Map controls"
+            className={`scene-controls${isTextExpanded ? " is-disabled" : ""}`}
+            inert={isTextExpanded ? true : undefined}
+          >
+            <arcgis-zoom referenceElement={SCENE_ELEMENT_ID} visualScale="s" />
+            <arcgis-compass referenceElement={SCENE_ELEMENT_ID} visualScale="s" />
+          </div>
+        ) : null}
         {sceneReady && slides.length > 0 ? (
           <SceneOverlay
             activeSlideId={activeSlideId}
             currentSlide={currentSlide}
+            extraParagraphs={extraParagraphs}
             introParagraph={introParagraph}
             isInfoOpen={isInfoOpen}
+            isMobileLandscape={viewportState.isMobileLandscape}
             isTextExpanded={isTextExpanded}
             isTourPlaying={isTourPlaying}
             onInfoOpenChange={setIsInfoOpen}
@@ -637,11 +725,12 @@ export function App(): JSX.Element {
             progressOffset={progressOffset}
             slides={slides}
             tourProgressCircumference={TOUR_PROGRESS_CIRCUMFERENCE}
+            viewportMode={viewportMode}
           />
         ) : null}
         {statusMessage ? <div className="scene-status">{statusMessage}</div> : null}
       </div>
-      <NavigationOnboarding open={isOnboardingOpen} onClose={handleOnboardingClose} />
+      <NavigationOnboarding open={shouldShowOnboarding} onClose={handleOnboardingClose} />
     </calcite-shell>
   );
 }
