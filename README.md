@@ -2,13 +2,19 @@
 
 Malbork Castle Explorer is a full-screen 3D web experience built with React, Vite, ArcGIS Map Components, and Calcite. The application uses an ArcGIS Web Scene as the source of truth and presents slide-driven exploration, descriptive text overlays, and a guided tour mode over the mesh-based castle scene.
 
+## Live App
+
+- GitHub Pages: https://arozniak.github.io/malbork-castle-explorer/
+
 ## Current Features
 
 - Loads the public Malbork Web Scene `a032056172494a81a2105ef9232ea9a9`.
-- Builds the top navigation from the scene presentation slides.
-- Shows intro and expanded descriptive text from slide descriptions.
+- Builds the scene navigation from the presentation slides, with a desktop tab rail and mobile previous/next navigation.
+- Shows intro and expanded descriptive text sourced from slide descriptions.
 - Supports a guided tour with per-stop progress and orbit motion.
 - Keeps user interactions in control: clicks and text expansion pause automation.
+- Includes a desktop navigation onboarding dialog and a mobile portrait-orientation notice.
+- Adds an in-app About panel plus styled zoom and compass controls on non-mobile viewports.
 
 ## Tech Stack
 
@@ -55,10 +61,15 @@ The current production build succeeds. Vite still reports a chunk-size warning, 
 - Direct `@arcgis/core` usage is intentionally limited to custom tour-motion and geometry work that Map Components do not cover.
 - UI should remain minimal and unobtrusive over the full-screen scene.
 
+## Acknowledgements
+
+- The source imagery was processed into a 3D mesh by Ashleigh Sier (Esri) using ArcGIS Reality Studio.
+- This application was vibe coded with Microsoft Copilot by Agnieszka Rozniak as part of work carried out at Esri R&D Center Zurich.
+
 ## Additional Documentation
 
 - [documentation/technical-constraints.md](documentation/technical-constraints.md)
 - [documentation/project-decisions.md](documentation/project-decisions.md)
-- [documentation/engineering-review-report.md](documentation/engineering-review-report.md)
-- [documentation/cleanup-review-summary.md](documentation/cleanup-review-summary.md)
 - [documentation/prompts.md](documentation/prompts.md)
+
+Other documents in [documentation/](documentation) are retained as working notes and review history and may contain information that is out of date.

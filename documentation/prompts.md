@@ -818,3 +818,11 @@ okay, the info icon works great. but looking at the mobile design, I think that 
 ## Mobile sentence splitting and full mobile coverage request
 
 it should work for every mobile size, as we have defined earlier. Also, if you keep just one sentence in the intro, the rest of the text should go into the part that appears when the user clicks "read more". you didnt think about it. do you know what I mean? also in the st mary church, the "st." is not a sentence, it's just a short for saint.
+
+## README currency and deployment URL request
+
+I think I have implemented all the features which were needed for now. My question is: is the readme up to date? What I know I want to change is too add the url to the app deployed as a github pages to the read me.
+
+## Documentation list, freshness, and README acknowledgements request
+
+I think I would like only the "technical constrainsts", "project decisions" and "prompts log" listed. Go through those files and review if they are up to date and correct according to the current state of the app. Maybe add a sentence that "other documents may contain information that is out of date". does it make sense? Also, I would like to have acknowledgments also in the readme (you can use the same ones as in the app )
