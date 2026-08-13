@@ -1,6 +1,6 @@
 # Malbork Castle Explorer
 
-Malbork Castle Explorer is a full-screen 3D web experience built with React, Vite, ArcGIS Map Components, and Calcite. The application uses an ArcGIS Web Scene as the source of truth and presents slide-driven exploration, descriptive text overlays, and a guided tour mode over the mesh-based castle scene.
+Malbork Castle Explorer is a full-screen 3D web experience built with React, Vite, and ArcGIS Map Components. The application uses an ArcGIS Web Scene as the source of truth and presents slide-driven exploration, descriptive text overlays, and a guided tour mode over the mesh-based castle scene.
 
 ## Live App
 
@@ -23,7 +23,6 @@ Malbork Castle Explorer is a full-screen 3D web experience built with React, Vit
 - TypeScript
 - `@arcgis/map-components`
 - `@arcgis/core` for tour geometry and spatial-reference math
-- `@esri/calcite-components`
 
 ## Project Structure
 

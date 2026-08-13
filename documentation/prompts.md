@@ -826,3 +826,9 @@ I think I have implemented all the features which were needed for now. My questi
 ## Documentation list, freshness, and README acknowledgements request
 
 I think I would like only the "technical constrainsts", "project decisions" and "prompts log" listed. Go through those files and review if they are up to date and correct according to the current state of the app. Maybe add a sentence that "other documents may contain information that is out of date". does it make sense? Also, I would like to have acknowledgments also in the readme (you can use the same ones as in the app )
+
+## App title and social sharing metadata request
+
+Change the Url title of the app to "Malbork Castle Explorer"
+
+Related: when sharing the app through a link (e.g. Teams, Whatsapp, Slack) there is the possibility to define meta tags for the title/description/thumbnail. tweak those to something that make sense! Take for example our Explore Mars showcase: [Explore Mars with ArcGIS](https://explore-mars.esri.com/)
